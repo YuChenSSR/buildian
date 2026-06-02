@@ -95,6 +95,7 @@ export interface AcpInitializeResponse {
 
 export interface AcpAuthenticateRequest {
   methodId: string;
+  _meta?: Record<string, unknown>;
 }
 
 export type AcpAuthenticateResponse = Record<string, never>;

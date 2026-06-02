@@ -1,7 +1,7 @@
 {
-  "name": "claudian",
+  "name": "grok-build-obsidian",
   "version": "2.0.21",
-  "description": "Claudian - Claude Code embedded in Obsidian sidebar",
+  "description": "An Obsidian Grok Build plugin based on Claudian and modified for xAI Grok Build.",
   "main": "main.js",
   "scripts": {
     "postinstall": "node scripts/postinstall.mjs",
@@ -17,13 +17,14 @@
     "version": "node scripts/sync-version.js && git add manifest.json"
   },
   "keywords": [
-    "claude-code",
+    "grok-build",
+    "xai",
     "obsidian",
     "obsidian-plugin",
     "productivity",
     "ide"
   ],
-  "author": "Yishen Tu",
+  "author": "YuChenSSR",
   "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^10.0.1",

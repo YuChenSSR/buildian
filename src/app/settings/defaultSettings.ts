@@ -7,7 +7,7 @@ export const DEFAULT_CLAUDIAN_SETTINGS: ClaudianSettings = {
 
   permissionMode: 'yolo',
 
-  model: 'haiku',
+  model: 'grok:grok-build',
   thinkingBudget: 'off',
   effortLevel: 'high',
   serviceTier: 'default',
@@ -35,7 +35,7 @@ export const DEFAULT_CLAUDIAN_SETTINGS: ClaudianSettings = {
 
   providerConfigs: getBuiltInProviderDefaultConfigs(),
 
-  settingsProvider: 'claude',
+  settingsProvider: 'grok',
   savedProviderModel: {},
   savedProviderEffort: {},
   savedProviderServiceTier: {},

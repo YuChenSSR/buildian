@@ -68,7 +68,7 @@ function openHotkeySettings(app: App): void {
       return;
     }
 
-    searchEl.value = 'Claudian';
+    searchEl.value = 'Grok Build';
     tab.updateHotkeyVisibility?.();
   }, 100);
 }

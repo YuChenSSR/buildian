@@ -37,7 +37,7 @@ export interface ProviderCapabilities {
   planPathPrefix?: string;
 }
 
-export const DEFAULT_CHAT_PROVIDER_ID = 'claude' as const satisfies ProviderId;
+export const DEFAULT_CHAT_PROVIDER_ID = 'grok' as const satisfies ProviderId;
 
 export interface CreateChatRuntimeOptions {
   plugin: ClaudianPlugin;

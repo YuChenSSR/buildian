@@ -90,6 +90,16 @@ describe('ProviderRegistry', () => {
     expect(caps.supportsFork).toBe(false);
   });
 
+  it('returns Grok capabilities', () => {
+    const caps = ProviderRegistry.getCapabilities('grok');
+    expect(caps.providerId).toBe('grok');
+    expect(caps.supportsProviderCommands).toBe(true);
+    expect(caps.supportsInstructionMode).toBe(true);
+    expect(caps.supportsImageAttachments).toBe(false);
+    expect(caps.supportsFork).toBe(false);
+    expect(caps.reasoningControl).toBe('effort');
+  });
+
   it('returns Pi capabilities', () => {
     const caps = ProviderRegistry.getCapabilities('pi');
     expect(caps.providerId).toBe('pi');
@@ -103,6 +113,7 @@ describe('ProviderRegistry', () => {
     const ids = ProviderRegistry.getRegisteredProviderIds();
     expect(ids).toContain('claude');
     expect(ids).toContain('codex');
+    expect(ids).toContain('grok');
     expect(ids).toContain('pi');
   });
 
@@ -130,11 +141,20 @@ describe('ProviderRegistry', () => {
         pi: { enabled: true },
       },
     })).toEqual(['opencode', 'pi', 'codex', 'claude']);
+    expect(ProviderRegistry.getEnabledProviderIds({
+      providerConfigs: {
+        codex: { enabled: true },
+        grok: { enabled: true },
+        opencode: { enabled: true },
+        pi: { enabled: true },
+      },
+    })).toEqual(['opencode', 'pi', 'grok', 'codex', 'claude']);
   });
 
   it('returns the display name from provider registration metadata', () => {
     expect(ProviderRegistry.getProviderDisplayName('claude')).toBe('Claude');
     expect(ProviderRegistry.getProviderDisplayName('codex')).toBe('Codex');
+    expect(ProviderRegistry.getProviderDisplayName('grok')).toBe('Grok Build');
   });
 
   it('routes auto title generation to Claude independently of chat provider state', async () => {

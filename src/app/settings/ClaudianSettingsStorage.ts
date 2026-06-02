@@ -22,21 +22,9 @@ import {
   type ProviderConfigMap,
 } from '../../core/types/settings';
 import {
-  getClaudeProviderSettings,
-  updateClaudeProviderSettings,
-} from '../../providers/claude/settings';
-import {
-  getCodexProviderSettings,
-  updateCodexProviderSettings,
-} from '../../providers/codex/settings';
-import {
-  getOpencodeProviderSettings,
-  updateOpencodeProviderSettings,
-} from '../../providers/opencode/settings';
-import {
-  getPiProviderSettings,
-  updatePiProviderSettings,
-} from '../../providers/pi/settings';
+  getGrokProviderSettings,
+  updateGrokProviderSettings,
+} from '../../providers/grok/settings';
 import { DEFAULT_CLAUDIAN_SETTINGS } from './defaultSettings';
 
 export {
@@ -133,10 +121,7 @@ function normalizeProviderConfigs(value: unknown): ProviderConfigMap {
 }
 
 const HOST_SCOPED_PROVIDER_CONFIG_FIELDS: Record<string, string[]> = {
-  claude: ['cliPathsByHost'],
-  codex: ['cliPathsByHost', 'installationMethodsByHost', 'wslDistroOverridesByHost'],
-  opencode: ['cliPathsByHost'],
-  pi: ['cliPathsByHost'],
+  grok: ['cliPathsByHost'],
 };
 
 function hasHostScopedProviderConfigNormalization(
@@ -317,21 +302,9 @@ export class ClaudianSettingsStorage {
       ...legacyNormalized,
     };
 
-    updateClaudeProviderSettings(
+    updateGrokProviderSettings(
       merged,
-      getClaudeProviderSettings(legacyProviderSettings),
-    );
-    updateCodexProviderSettings(
-      merged,
-      getCodexProviderSettings(legacyProviderSettings),
-    );
-    updateOpencodeProviderSettings(
-      merged,
-      getOpencodeProviderSettings(legacyProviderSettings),
-    );
-    updatePiProviderSettings(
-      merged,
-      getPiProviderSettings(legacyProviderSettings),
+      getGrokProviderSettings(merged),
     );
     const didNormalizeHostScopedProviderConfigs = hasHostScopedProviderConfigNormalization(
       providerConfigs,
@@ -394,17 +367,12 @@ export class ClaudianSettingsStorage {
       return;
     }
 
-    const current = await this.load();
-    updateClaudeProviderSettings(
-      current,
-      { lastModel: model },
-    );
-    await this.save(current);
+    await this.update({ model });
   }
 
   async setLastEnvHash(hash: string): Promise<void> {
     const current = await this.load();
-    updateClaudeProviderSettings(
+    updateGrokProviderSettings(
       current,
       { environmentHash: hash },
     );
