@@ -1,7 +1,7 @@
 {
-  "name": "grok-build-obsidian",
-  "version": "0.1.1",
-  "description": "An Obsidian Grok Build plugin based on Claudian and modified for xAI Grok Build.",
+  "name": "buildian",
+  "version": "0.1.2",
+  "description": "An unofficial Obsidian integration for the xAI Grok Build CLI, based on Claudian.",
   "main": "main.js",
   "scripts": {
     "postinstall": "node scripts/postinstall.mjs",
@@ -19,8 +19,9 @@
     "version": "node scripts/sync-version.js && git add manifest.json"
   },
   "keywords": [
-    "grok-build",
-    "xai",
+    "buildian",
+    "coding-agent",
+    "agent-client-protocol",
     "obsidian",
     "obsidian-plugin",
     "productivity",

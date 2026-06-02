@@ -37,7 +37,7 @@ export const grokChatUIConfig: ProviderChatUIConfig = {
     const discoveredOptions = new Map(grokSettings.discoveredModels.map((model) => [
       encodeGrokModelId(model.rawId),
       {
-        description: model.description ?? 'Grok Build runtime',
+        description: model.description ?? 'CLI runtime',
         label: grokSettings.modelAliases[model.rawId] ?? model.label,
         value: encodeGrokModelId(model.rawId),
       } satisfies ProviderUIOption,

@@ -1,16 +1,18 @@
-# Grok Build for Obsidian
+# Buildian
 
-![GitHub stars](https://img.shields.io/github/stars/YuChenSSR/grok-build-obsidian?style=social)
-![GitHub release](https://img.shields.io/github/v/release/YuChenSSR/grok-build-obsidian)
-![License](https://img.shields.io/github/license/YuChenSSR/grok-build-obsidian)
+![GitHub stars](https://img.shields.io/github/stars/YuChenSSR/buildian?style=social)
+![GitHub release](https://img.shields.io/github/v/release/YuChenSSR/buildian)
+![License](https://img.shields.io/github/license/YuChenSSR/buildian)
 
 ![Preview](image.png)
 
-An Obsidian plugin that embeds xAI Grok Build in your vault. This project is based on Claudian and modified to adapt Claudian's agent workflow for Grok Build.
+Buildian is an unofficial Obsidian plugin that connects your vault to the xAI Grok Build CLI. This project is based on Claudian and modified to adapt Claudian's agent workflow for the Grok Build CLI.
+
+Buildian is not affiliated with, endorsed by, or sponsored by xAI.
 
 ## Features & Usage
 
-Open the Grok Build chat sidebar from the ribbon icon or command palette. Select text and use the hotkey for inline edit. Grok Build runs with your vault as its working directory, so it can read, write, edit, and search files in your vault.
+Open the Buildian chat sidebar from the ribbon icon or command palette. Select text and use the hotkey for inline edit. The CLI runs with your vault as its working directory, so it can read, write, edit, and search files in your vault.
 
 **Inline Edit** — Select text or start at the cursor position + hotkey to edit directly in notes with word-level diff preview.
 
@@ -22,7 +24,7 @@ Open the Grok Build chat sidebar from the ribbon icon or command palette. Select
 
 **Instruction Mode (`#`)** — Refined custom instructions added from the chat input.
 
-**MCP Servers** — Grok Build manages MCP through its own CLI-native configuration.
+**MCP Servers** — The runtime manages MCP through its own CLI-native configuration.
 
 **Multi-Tab & Conversations** — Multiple chat tabs, conversation history, fork, resume, and compact.
 
@@ -36,22 +38,22 @@ Open the Grok Build chat sidebar from the ribbon icon or command palette. Select
 
 ### From GitHub Release
 
-1. Download `main.js`, `manifest.json`, and `styles.css` from the [latest release](https://github.com/YuChenSSR/grok-build-obsidian/releases/latest)
-2. Create a folder called `grok-build` in your vault's plugins folder:
+1. Download `main.js`, `manifest.json`, and `styles.css` from the [latest release](https://github.com/YuChenSSR/buildian/releases/latest)
+2. Create a folder called `buildian` in your vault's plugins folder:
    ```
-   /path/to/vault/.obsidian/plugins/grok-build/
+   /path/to/vault/.obsidian/plugins/buildian/
    ```
-3. Copy the downloaded files into the `grok-build` folder
+3. Copy the downloaded files into the `buildian` folder
 4. Enable the plugin in Obsidian:
-   - Settings → Community plugins → Enable "Grok Build"
+   - Settings → Community plugins → Enable "Buildian"
 
 ### From source (development)
 
 1. Clone this repository into your vault's plugins folder:
    ```bash
    cd /path/to/vault/.obsidian/plugins
-   git clone https://github.com/YuChenSSR/grok-build-obsidian.git grok-build
-   cd grok-build
+   git clone https://github.com/YuChenSSR/buildian.git buildian
+   cd buildian
    ```
 
 2. Install dependencies and build:
@@ -61,7 +63,7 @@ Open the Grok Build chat sidebar from the ribbon icon or command palette. Select
    ```
 
 3. Enable the plugin in Obsidian:
-   - Settings → Community plugins → Enable "Grok Build"
+   - Settings → Community plugins → Enable "Buildian"
 
 ### Development
 
@@ -75,11 +77,11 @@ npm run build
 
 ## Privacy & Data Use
 
-- **Sent to API**: Your input, attached files, images, and tool call outputs are sent through Grok Build according to the Grok CLI's behavior and your xAI account/API configuration.
-- **Local storage**: Grok Build settings and session metadata are stored in `vault/.grok-build/`.
+- **Sent to API**: Your input, attached files, images, and tool call outputs are sent through the CLI according to the Grok CLI's behavior and your xAI account/API configuration.
+- **Local storage**: Buildian settings and session metadata are stored in `vault/.buildian/`.
 - **Environment variables**: Provider subprocesses inherit the Obsidian process environment plus any variables you configure in the plugin. This is needed for CLI authentication, proxies, certificates, and PATH resolution.
 - **Device-specific paths**: Per-device CLI paths use an opaque local key stored in browser local storage, not your system hostname.
-- **Background activity**: This plugin does not run telemetry beacons. UI polling timers read local Obsidian/editor selection state only. Network activity is limited to explicit Grok Build runtime work, configured MCP endpoints, and CLI calls needed to answer your requests.
+- **Background activity**: This plugin does not run telemetry beacons. UI polling timers read local Obsidian/editor selection state only. Network activity is limited to explicit runtime work, configured MCP endpoints, and CLI calls needed to answer your requests.
 
 ## Troubleshooting
 
@@ -87,7 +89,7 @@ npm run build
 
 If you encounter `spawn grok ENOENT` or `Grok CLI not found`, the plugin can't auto-detect your Grok installation.
 
-**Solution**: Leave the setting empty first so the plugin can auto-detect Grok. If auto-detection fails, find your CLI path and set it in Settings → Grok Build → CLI path.
+**Solution**: Leave the setting empty first so the plugin can auto-detect Grok. If auto-detection fails, find your CLI path and set it in Settings → Buildian → CLI path.
 
 | Platform | Command | Example Path |
 |----------|---------|--------------|
@@ -109,7 +111,7 @@ If different, GUI apps like Obsidian may not find Node.js.
 1. Install native binary (recommended)
 2. Add Node.js path to Settings → Environment: `PATH=/path/to/node/bin`
 
-If you have a feature request or run into any bugs, please [submit a GitHub issue](https://github.com/YuChenSSR/grok-build-obsidian/issues).
+If you have a feature request or run into any bugs, please [submit a GitHub issue](https://github.com/YuChenSSR/buildian/issues).
 
 ## Architecture
 
@@ -143,9 +145,9 @@ src/
 
 ## Roadmap
 
-- [x] Grok Build provider integration
+- [x] Grok Build CLI provider integration
 - [x] Local install path separated from Claudian
-- [ ] More Grok Build runtime testing across platforms
+- [ ] More runtime testing across platforms
 
 ## License
 
@@ -153,11 +155,11 @@ Licensed under the [MIT License](LICENSE).
 
 ## Star History
 
-<a href="https://www.star-history.com/?repos=YuChenSSR%2Fgrok-build-obsidian&type=date&legend=top-left">
+<a href="https://www.star-history.com/?repos=YuChenSSR%2Fbuildian&type=date&legend=top-left">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/image?repos=YuChenSSR/grok-build-obsidian&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/image?repos=YuChenSSR/grok-build-obsidian&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/image?repos=YuChenSSR/grok-build-obsidian&type=date&legend=top-left" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/image?repos=YuChenSSR/buildian&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/image?repos=YuChenSSR/buildian&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/image?repos=YuChenSSR/buildian&type=date&legend=top-left" />
  </picture>
 </a>
 
@@ -165,4 +167,4 @@ Licensed under the [MIT License](LICENSE).
 
 - [Claudian](https://github.com/YishenTu/claudian), which this plugin is based on.
 - [Obsidian](https://obsidian.md) for the plugin API
-- [xAI](https://x.ai/) for Grok Build and the [Grok CLI](https://x.ai/cli)
+- [xAI](https://x.ai/) for the Grok Build CLI

@@ -120,7 +120,7 @@ export const PI_PROVIDER_ICON: ProviderIconSvg = {
 
 export const GROK_PROVIDER_ICON: ProviderIconSvg = {
   viewBox: '0 0 24 24',
-  path: 'M17.9 3h2.7l-7.2 8.2L21 21h-6.4l-5-6.4L4 21H1.4l7.7-8.8L2 3h6.5l4.5 5.9L17.9 3Zm-1 16.7h1.5L7.7 4.2H6.1l10.8 15.5Z',
+  path: 'M4 4C2.9 4 2 4.9 2 6v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H4Zm0 2h16v12H4V6Zm2.7 2.3L5.3 9.7 7.6 12l-2.3 2.3 1.4 1.4 3.7-3.7-3.7-3.7ZM11 15v2h6v-2h-6Z',
 };
 
 export interface CreateProviderIconSvgOptions {

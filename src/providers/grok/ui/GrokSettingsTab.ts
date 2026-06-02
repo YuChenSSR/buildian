@@ -27,8 +27,8 @@ export const grokSettingsTabRenderer: ProviderSettingsTabRenderer = {
     new Setting(container).setName('Setup').setHeading();
 
     new Setting(container)
-      .setName('Enable Grok Build')
-      .setDesc('Launch `grok agent stdio` as a provider.')
+      .setName('Enable buildian')
+      .setDesc('Launch the Grok CLI ACP runtime (`grok agent stdio`).')
       .addToggle((toggle) =>
         toggle
           .setValue(grokSettings.enabled)
@@ -195,7 +195,7 @@ export const grokSettingsTabRenderer: ProviderSettingsTabRenderer = {
       return [
         {
           description: 'xAI coding agent',
-          label: 'Grok Build',
+          label: 'Buildian default',
           rawId: GROK_DEFAULT_MODEL_ID,
         },
         ...discovered,
@@ -210,11 +210,11 @@ export const grokSettingsTabRenderer: ProviderSettingsTabRenderer = {
       );
 
       new Setting(modelsContainer)
-        .setName('Discover Grok models')
+        .setName('Discover CLI models')
         .setDesc(loadingCatalog
-          ? 'Loading Grok model catalog...'
+          ? 'Loading model catalog...'
           : loadFailed
-            ? 'Could not load Grok model catalog. Check the CLI path and login state.'
+            ? 'Could not load the model catalog. Check the CLI path and login state.'
             : 'Fetch models and runtime commands from `grok agent stdio` without creating a chat session.')
         .addButton((button) => {
           button
@@ -227,7 +227,7 @@ export const grokSettingsTabRenderer: ProviderSettingsTabRenderer = {
 
       new Setting(modelsContainer)
         .setName('Visible models')
-        .setDesc('Choose which Grok models appear in the chat selector. If none are selected, Grok Build is shown by default.');
+        .setDesc('Choose which CLI models appear in the chat selector. If none are selected, the buildian default is shown.');
 
       for (const model of getDisplayModels()) {
         const row = new Setting(modelsContainer)
@@ -267,7 +267,7 @@ export const grokSettingsTabRenderer: ProviderSettingsTabRenderer = {
     new Setting(container).setName('Commands').setHeading();
     context.renderHiddenProviderCommandSetting(container, 'grok', {
       name: 'Hidden Commands',
-      desc: 'Hide specific Grok runtime commands from the dropdown. Enter names without the leading slash, one per line.',
+      desc: 'Hide specific runtime commands from the dropdown. Enter names without the leading slash, one per line.',
       placeholder: 'compact\nalways-approve\ncontext',
     });
 
@@ -276,8 +276,8 @@ export const grokSettingsTabRenderer: ProviderSettingsTabRenderer = {
       plugin: context.plugin,
       scope: 'provider:grok',
       heading: 'Environment',
-      name: 'Grok environment',
-      desc: 'Grok-owned runtime variables only. Use this for XAI_API_KEY, GROK_CODE_XAI_API_KEY, GROK_HOME, and Grok-specific configuration.',
+      name: 'CLI environment',
+      desc: 'Runtime-specific variables only. Use this for XAI_API_KEY, GROK_CODE_XAI_API_KEY, GROK_HOME, and CLI-specific configuration.',
       placeholder: 'XAI_API_KEY=your-key\nGROK_HOME=/path/to/grok',
       renderCustomContextLimits: (target) => context.renderCustomContextLimits(target, 'grok'),
     });

@@ -61,7 +61,7 @@ export default class ClaudianPlugin extends Plugin {
       (leaf) => new ClaudianView(leaf, this)
     );
 
-    this.addRibbonIcon('bot', 'Open Grok Build', () => {
+    this.addRibbonIcon('bot', 'Open buildian', () => {
       void this.activateView();
     });
 

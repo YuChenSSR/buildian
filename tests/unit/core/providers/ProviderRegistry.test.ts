@@ -154,7 +154,7 @@ describe('ProviderRegistry', () => {
   it('returns the display name from provider registration metadata', () => {
     expect(ProviderRegistry.getProviderDisplayName('claude')).toBe('Claude');
     expect(ProviderRegistry.getProviderDisplayName('codex')).toBe('Codex');
-    expect(ProviderRegistry.getProviderDisplayName('grok')).toBe('Grok Build');
+    expect(ProviderRegistry.getProviderDisplayName('grok')).toBe('Buildian');
   });
 
   it('routes auto title generation to Claude independently of chat provider state', async () => {

@@ -1,4 +1,4 @@
-export const CLAUDIAN_STORAGE_PATH = '.grok-build';
+export const CLAUDIAN_STORAGE_PATH = '.buildian';
 
 export const LEGACY_CLAUDIAN_SETTINGS_PATH = '.claude/claudian-settings.json';
 export const CLAUDIAN_SETTINGS_PATH = `${CLAUDIAN_STORAGE_PATH}/claudian-settings.json`;

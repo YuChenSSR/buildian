@@ -18,7 +18,7 @@ export const grokProviderRegistration: ProviderRegistration = {
   createInstructionRefineService: (plugin) => new GrokInstructionRefineService(plugin),
   createRuntime: ({ plugin }) => new GrokChatRuntime(plugin),
   createTitleGenerationService: (plugin) => new GrokTitleGenerationService(plugin),
-  displayName: 'Grok Build',
+  displayName: 'Buildian',
   environmentKeyPatterns: [/^GROK_/i, /^XAI_/i],
   historyService: new GrokConversationHistoryService(),
   isEnabled: (settings) => getGrokProviderSettings(settings).enabled,

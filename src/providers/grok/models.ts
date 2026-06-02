@@ -129,7 +129,7 @@ export function getGrokReasoningOptions(): ProviderReasoningOption[] {
 export function buildGrokDefaultModelOptions(): ProviderUIOption[] {
   return [{
     description: 'xAI coding agent',
-    label: 'Grok Build',
+    label: 'Buildian default',
     value: encodeGrokModelId(GROK_DEFAULT_MODEL_ID),
   }];
 }

@@ -68,7 +68,7 @@ function openHotkeySettings(app: App): void {
       return;
     }
 
-    searchEl.value = 'Grok Build';
+    searchEl.value = 'Buildian';
     tab.updateHotkeyVisibility?.();
   }, 100);
 }

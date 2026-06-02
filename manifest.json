@@ -1,9 +1,9 @@
 {
-  "id": "grok-build",
-  "name": "Grok Build",
-  "version": "0.1.1",
+  "id": "buildian",
+  "name": "Buildian",
+  "version": "0.1.2",
   "minAppVersion": "1.7.2",
-  "description": "An Obsidian Grok Build plugin based on Claudian, modified to adapt the original agent workflow for xAI Grok Build.",
+  "description": "An unofficial Obsidian integration for the xAI Grok Build CLI, based on Claudian.",
   "author": "YuChenSSR",
   "authorUrl": "https://github.com/YuChenSSR",
   "isDesktopOnly": true
