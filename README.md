@@ -98,6 +98,19 @@ If you encounter `spawn grok ENOENT` or `Grok CLI not found`, the plugin can't a
 
 **Alternative**: Add your Node.js bin directory to PATH in Settings → Environment → Custom variables.
 
+### Can't see Grok Build model / can't connect to xAI
+
+If the Grok Build model doesn't appear or the CLI can't reach xAI, your network may require a proxy to access xAI. Configure proxy environment variables in Settings → Environment → Shared environment:
+
+```
+HTTP_PROXY=http://127.0.0.1:<port>
+HTTPS_PROXY=http://127.0.0.1:<port>
+```
+
+Replace `<port>` with the port of your local proxy (e.g. Clash, V2Ray, or any HTTP proxy on your machine). Restart Obsidian after changing the values so the CLI subprocess picks them up.
+
+![Proxy settings](proxy-settings.png)
+
 ### npm CLI and Node.js not in same directory
 
 If using a shell-managed CLI, check whether `grok` is visible to GUI apps:
