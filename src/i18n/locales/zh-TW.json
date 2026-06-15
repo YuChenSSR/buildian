@@ -106,7 +106,7 @@
     "titleModel": {
       "name": "標題生成模型",
       "desc": "用於自動生成對話標題的模型。",
-      "auto": "自動 (Haiku)"
+      "auto": "自動（預設模型）"
     },
     "navMappings": {
       "name": "Vim 風格導航映射",

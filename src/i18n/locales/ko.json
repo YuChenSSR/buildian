@@ -106,7 +106,7 @@
     "titleModel": {
       "name": "제목 생성 모델",
       "desc": "대화 제목을 자동 생성하는 데 사용되는 모델.",
-      "auto": "자동 (Haiku)"
+      "auto": "자동 (기본 모델)"
     },
     "navMappings": {
       "name": "Vim 스타일 네비게이션 매핑",

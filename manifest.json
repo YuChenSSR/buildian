@@ -1,7 +1,7 @@
 {
   "id": "buildian",
   "name": "Buildian",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "minAppVersion": "1.7.2",
   "description": "Unofficial integration for the xAI Grok Build CLI, based on Claudian.",
   "author": "YuChenSSR",

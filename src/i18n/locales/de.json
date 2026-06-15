@@ -106,7 +106,7 @@
     "titleModel": {
       "name": "Titel-Generierungsmodell",
       "desc": "Modell zur automatischen Generierung von Konversationstiteln.",
-      "auto": "Automatisch (Haiku)"
+      "auto": "Automatisch (Standardmodell)"
     },
     "navMappings": {
       "name": "Vim-Style Navigationszuordnungen",
