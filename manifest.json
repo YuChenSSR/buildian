@@ -1,7 +1,7 @@
 {
   "id": "buildian",
   "name": "Buildian",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "minAppVersion": "1.7.2",
   "description": "Unofficial Obsidian integration for ACP coding agents including xAI Grok Build and Cursor Agent, based on Claudian.",
   "author": "YuChenSSR",
