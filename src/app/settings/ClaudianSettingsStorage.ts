@@ -21,6 +21,11 @@ import {
   type HiddenProviderCommands,
   type ProviderConfigMap,
 } from '../../core/types/settings';
+import { CURSOR_PROVIDER_ID } from '../../providers/cursor/models';
+import {
+  getCursorProviderSettings,
+  updateCursorProviderSettings,
+} from '../../providers/cursor/settings';
 import {
   getGrokProviderSettings,
   updateGrokProviderSettings,
@@ -121,6 +126,7 @@ function normalizeProviderConfigs(value: unknown): ProviderConfigMap {
 }
 
 const HOST_SCOPED_PROVIDER_CONFIG_FIELDS: Record<string, string[]> = {
+  [CURSOR_PROVIDER_ID]: ['cliPathsByHost'],
   grok: ['cliPathsByHost'],
 };
 
@@ -305,6 +311,10 @@ export class ClaudianSettingsStorage {
     updateGrokProviderSettings(
       merged,
       getGrokProviderSettings(merged),
+    );
+    updateCursorProviderSettings(
+      merged,
+      getCursorProviderSettings(merged),
     );
     const didNormalizeHostScopedProviderConfigs = hasHostScopedProviderConfigNormalization(
       providerConfigs,

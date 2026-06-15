@@ -1,7 +1,7 @@
 {
   "name": "buildian",
   "version": "0.1.4",
-  "description": "Unofficial integration for the xAI Grok Build CLI, based on Claudian.",
+  "description": "Unofficial Obsidian integration for ACP coding agents including xAI Grok Build and Cursor Agent, based on Claudian.",
   "main": "main.js",
   "scripts": {
     "postinstall": "node scripts/postinstall.mjs",
@@ -12,9 +12,9 @@
     "lint": "eslint \"{src,tests}/**/*.ts\"",
     "lint:fix": "npm run lint -- --fix",
     "test": "npm run test:grok",
-    "test:grok": "node scripts/run-jest.js --runInBand tests/unit/providers/grok tests/unit/providers/defaultProviderConfigs.test.ts tests/unit/core/providers/modelRouting.test.ts",
+    "test:grok": "node scripts/run-jest.js --runInBand tests/unit/providers/grok tests/unit/providers/cursor tests/unit/providers/defaultProviderConfigs.test.ts tests/unit/core/providers/modelRouting.test.ts",
     "test:all": "node scripts/run-jest.js",
-    "test:watch": "node scripts/run-jest.js --watch tests/unit/providers/grok tests/unit/providers/defaultProviderConfigs.test.ts tests/unit/core/providers/modelRouting.test.ts",
+    "test:watch": "node scripts/run-jest.js --watch tests/unit/providers/grok tests/unit/providers/cursor tests/unit/providers/defaultProviderConfigs.test.ts tests/unit/core/providers/modelRouting.test.ts",
     "test:coverage": "npm run test:grok -- --coverage",
     "version": "node scripts/sync-version.js && git add manifest.json"
   },

@@ -412,6 +412,8 @@ export interface ProviderConversationHistoryService {
   ): Record<string, unknown>;
   /** Adds provider-owned persisted metadata to Conversation.providerState before session save. */
   buildPersistedProviderState?(conversation: Conversation): Record<string, unknown> | undefined;
+  /** Persists local messages for providers that cannot hydrate from native transcripts. */
+  buildPersistedMessages?(conversation: Conversation): Conversation['messages'] | undefined;
 }
 
 export type ProviderTaskTerminalStatus = Extract<ToolCallInfo['status'], 'completed' | 'error'>;

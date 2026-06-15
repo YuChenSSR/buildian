@@ -123,6 +123,11 @@ export const GROK_PROVIDER_ICON: ProviderIconSvg = {
   path: 'M4 4C2.9 4 2 4.9 2 6v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H4Zm0 2h16v12H4V6Zm2.7 2.3L5.3 9.7 7.6 12l-2.3 2.3 1.4 1.4 3.7-3.7-3.7-3.7ZM11 15v2h6v-2h-6Z',
 };
 
+export const CURSOR_PROVIDER_ICON: ProviderIconSvg = {
+  viewBox: '0 0 24 24',
+  path: 'M4 3.5 20.5 12 4 20.5v-6.3L12.2 12 4 9.8V3.5Zm2 3.3v1.5l9.2 2.5L6 6.8Zm9.2 6.4L6 15.7v1.5l9.2-4Z',
+};
+
 export interface CreateProviderIconSvgOptions {
   className?: string;
   dataProvider?: string;

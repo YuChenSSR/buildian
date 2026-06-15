@@ -326,7 +326,7 @@ export default class ClaudianPlugin extends Plugin {
         lastResponseAt: meta.lastResponseAt,
         sessionId: resumeSessionId,
         providerState: meta.providerState,
-        messages: [],
+        messages: Array.isArray(meta.messages) ? meta.messages : [],
         currentNote: meta.currentNote,
         externalContextPaths: meta.externalContextPaths,
         enabledMcpServers: meta.enabledMcpServers,
@@ -683,7 +683,8 @@ export default class ClaudianPlugin extends Plugin {
 
     // Clear image data from memory after save (data is persisted by SDK).
     // Skip for pending forks: their deep-cloned images aren't in SDK storage yet.
-    if (!ProviderRegistry.getConversationHistoryService(conversation.providerId).isPendingForkConversation(conversation)) {
+    const historyService = ProviderRegistry.getConversationHistoryService(conversation.providerId);
+    if (!historyService.isPendingForkConversation(conversation) && !historyService.buildPersistedMessages) {
       for (const msg of conversation.messages) {
         if (msg.images) {
           for (const img of msg.images) {

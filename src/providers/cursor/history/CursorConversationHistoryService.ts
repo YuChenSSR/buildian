@@ -1,13 +1,13 @@
 import type { ProviderConversationHistoryService } from '../../../core/providers/types';
 import type { Conversation } from '../../../core/types';
-import { getGrokState, type GrokProviderState } from '../types';
+import { type CursorProviderState,getCursorState } from '../types';
 
-export class GrokConversationHistoryService implements ProviderConversationHistoryService {
+export class CursorConversationHistoryService implements ProviderConversationHistoryService {
   async hydrateConversationHistory(
     _conversation: Conversation,
     _vaultPath: string | null,
   ): Promise<void> {
-    // Grok ACP can load saved sessions by id, but the CLI transcript export format is
+    // Cursor ACP can load saved sessions by id, but the CLI transcript export format is
     // not consumed here yet. Existing in-memory messages are left untouched.
   }
 
@@ -15,7 +15,7 @@ export class GrokConversationHistoryService implements ProviderConversationHisto
     _conversation: Conversation,
     _vaultPath: string | null,
   ): Promise<void> {
-    // Never mutate Grok native history.
+    // Never mutate Cursor native history.
   }
 
   resolveSessionIdForConversation(conversation: Conversation | null): string | null {
@@ -37,9 +37,10 @@ export class GrokConversationHistoryService implements ProviderConversationHisto
   buildPersistedProviderState(
     conversation: Conversation,
   ): Record<string, unknown> | undefined {
-    const state = getGrokState(conversation.providerState);
-    const providerState: GrokProviderState = {
+    const state = getCursorState(conversation.providerState);
+    const providerState: CursorProviderState = {
       ...(state.agentVersion ? { agentVersion: state.agentVersion } : {}),
+      ...(state.sessionConfigKey ? { sessionConfigKey: state.sessionConfigKey } : {}),
     };
 
     return Object.keys(providerState).length > 0

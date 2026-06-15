@@ -6,9 +6,9 @@
 
 ![Preview](image.png)
 
-Buildian is an unofficial Obsidian plugin that connects your vault to the xAI Grok Build CLI. This project is based on Claudian and modified to adapt Claudian's agent workflow for the Grok Build CLI.
+Buildian is an unofficial Obsidian plugin that connects your vault to ACP coding agents, including the xAI Grok Build CLI and Cursor Agent. This project is based on Claudian and modified to adapt Claudian's agent workflow for provider-backed coding CLIs.
 
-Buildian is not affiliated with, endorsed by, or sponsored by xAI.
+Buildian is not affiliated with, endorsed by, or sponsored by xAI, Cursor, or Anysphere.
 
 ## Features & Usage
 
@@ -30,7 +30,7 @@ Open the Buildian chat sidebar from the ribbon icon or command palette. Select t
 
 ## Requirements
 
-- [Grok CLI](https://x.ai/cli) installed and authenticated with `grok login`.
+- Grok CLI installed and authenticated with `grok login`, or Cursor Agent installed and authenticated with `cursor-agent login`.
 - Obsidian v1.7.2+
 - Desktop only (macOS, Linux, Windows)
 
@@ -77,7 +77,7 @@ npm run build
 
 ## Privacy & Data Use
 
-- **Sent to API**: Your input, attached files, images, and tool call outputs are sent through the CLI according to the Grok CLI's behavior and your xAI account/API configuration.
+- **Sent to API**: Your input, attached files, images, and tool call outputs are sent through the selected provider CLI according to that CLI's behavior and your account/API configuration.
 - **Local storage**: Buildian settings and session metadata are stored in `vault/.buildian/`.
 - **Environment variables**: Provider subprocesses inherit the Obsidian process environment plus any variables you configure in the plugin. This is needed for CLI authentication, proxies, certificates, and PATH resolution.
 - **Device-specific paths**: Per-device CLI paths use an opaque local key stored in browser local storage, not your system hostname.
@@ -97,6 +97,17 @@ If you encounter `spawn grok ENOENT` or `Grok CLI not found`, the plugin can't a
 | Windows (native) | `where.exe grok` | `C:\Users\you\.grok\bin\grok.exe` |
 
 **Alternative**: Add your Node.js bin directory to PATH in Settings → Environment → Custom variables.
+
+### Cursor Agent CLI not found
+
+If you enable Cursor Agent and encounter `spawn cursor-agent ENOENT`, the plugin can't auto-detect your Cursor Agent installation.
+
+**Solution**: Leave the Cursor Agent CLI path setting empty first so the plugin can auto-detect `cursor-agent`. If auto-detection fails, find your CLI path and set it in Settings → Buildian → Cursor Agent → CLI path.
+
+| Platform | Command | Example Path |
+|----------|---------|--------------|
+| macOS/Linux | `which cursor-agent` | `/Users/you/.local/bin/cursor-agent` |
+| Windows (native) | `where.exe cursor-agent` | `C:\Users\you\.local\bin\cursor-agent.exe` |
 
 ### Can't see Grok Build model / can't connect to xAI
 
@@ -140,6 +151,7 @@ src/
 │   ├── security/                # Approval utilities
 │   └── ...                      # commands, mcp, prompt, storage, tools, types
 ├── providers/
+│   ├── cursor/                  # Cursor Agent ACP adaptor
 │   ├── claude/                  # Claude SDK adaptor, prompt encoding, storage, MCP, plugins
 │   ├── codex/                   # Codex app-server adaptor, JSON-RPC transport, JSONL history
 │   ├── opencode/                # Opencode adaptor
@@ -159,6 +171,7 @@ src/
 ## Roadmap
 
 - [x] Grok Build CLI provider integration
+- [x] Cursor Agent ACP provider integration
 - [x] Local install path separated from Claudian
 - [ ] More runtime testing across platforms
 
@@ -181,3 +194,4 @@ Licensed under the [MIT License](LICENSE).
 - [Claudian](https://github.com/YishenTu/claudian), which this plugin is based on.
 - [Obsidian](https://obsidian.md) for the plugin API
 - [xAI](https://x.ai/) for the Grok Build CLI
+- [Cursor](https://cursor.com/) for Cursor Agent

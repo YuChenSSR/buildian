@@ -100,10 +100,11 @@ export class SessionStorage {
   }
 
   toSessionMetadata(conversation: Conversation): SessionMetadata {
-    const providerState = ProviderRegistry
-      .getConversationHistoryService(conversation.providerId)
+    const historyService = ProviderRegistry.getConversationHistoryService(conversation.providerId);
+    const providerState = historyService
       .buildPersistedProviderState?.(conversation)
       ?? conversation.providerState;
+    const messages = historyService.buildPersistedMessages?.(conversation);
 
     return {
       id: conversation.id,
@@ -115,6 +116,7 @@ export class SessionStorage {
       lastResponseAt: conversation.lastResponseAt,
       sessionId: conversation.sessionId,
       providerState: providerState && Object.keys(providerState).length > 0 ? providerState : undefined,
+      messages: messages && messages.length > 0 ? messages : undefined,
       currentNote: conversation.currentNote,
       externalContextPaths: conversation.externalContextPaths,
       enabledMcpServers: conversation.enabledMcpServers,
