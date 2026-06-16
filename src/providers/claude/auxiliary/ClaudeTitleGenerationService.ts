@@ -77,7 +77,7 @@ export class TitleGenerationService {
     const titleModel = this.plugin.settings.titleGenerationModel;
     if (titleModel && claudeChatUIConfig.ownsModel(
       titleModel,
-      this.plugin.settings as unknown as Record<string, unknown>,
+      this.plugin.settings,
     )) {
       return titleModel;
     }

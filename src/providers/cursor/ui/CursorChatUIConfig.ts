@@ -156,7 +156,7 @@ export const cursorChatUIConfig: ProviderChatUIConfig = {
     }
 
     settingsBag.model = encodeCursorModelId(rawId);
-    settingsBag.effortLevel = this.getDefaultReasoningValue(model, settingsBag);
+    settingsBag.effortLevel = getCursorDefaultReasoningValue(model, settingsBag);
   },
 
   applyReasoningSelection(model: string, value: string, settings: unknown): void {
@@ -236,4 +236,8 @@ function pushOption(
 function normalizeDecodedRawModelId(model: string): string | null {
   const rawId = decodeCursorModelId(model);
   return rawId ? normalizeRawModelId(rawId) : null;
+}
+
+function getCursorDefaultReasoningValue(model: string, settings: Record<string, unknown>): string {
+  return cursorChatUIConfig.getDefaultReasoningValue(model, settings);
 }

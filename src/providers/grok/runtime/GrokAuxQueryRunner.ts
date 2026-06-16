@@ -18,7 +18,7 @@ export class GrokAuxQueryRunner implements AuxQueryRunner {
     const cwd = getVaultPath(this.plugin.app) ?? process.cwd();
     const command = this.plugin.getResolvedProviderCliPath('grok') ?? 'grok';
     const envText = getRuntimeEnvironmentText(
-      this.plugin.settings as unknown as Record<string, unknown>,
+      this.plugin.settings,
       'grok',
     );
     const customEnv = parseEnvironmentVariables(envText);

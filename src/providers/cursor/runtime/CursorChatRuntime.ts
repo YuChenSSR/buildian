@@ -211,7 +211,7 @@ export class CursorChatRuntime implements ChatRuntime {
   async reloadMcpServers(): Promise<void> {}
 
   async ensureReady(options?: ChatRuntimeEnsureReadyOptions): Promise<boolean> {
-    const settings = getCursorProviderSettings(this.plugin.settings as unknown as Record<string, unknown>);
+    const settings = getCursorProviderSettings(this.plugin.settings);
     if (!settings.enabled) {
       this.setReady(false);
       return false;
@@ -221,7 +221,7 @@ export class CursorChatRuntime implements ChatRuntime {
     const resolvedCliPath = this.plugin.getResolvedProviderCliPath(CURSOR_PROVIDER_ID) ?? 'cursor-agent';
     const providerSettings = this.getProviderSettings();
     const envText = getRuntimeEnvironmentText(
-      this.plugin.settings as unknown as Record<string, unknown>,
+      this.plugin.settings,
       CURSOR_PROVIDER_ID,
     );
     const launchSpec = this.buildLaunchSpec({
@@ -929,7 +929,7 @@ export class CursorChatRuntime implements ChatRuntime {
 
   private getProviderSettings(): Record<string, unknown> {
     return ProviderSettingsCoordinator.getProviderSettingsSnapshot(
-      this.plugin.settings as unknown as Record<string, unknown>,
+      this.plugin.settings,
       this.providerId,
     );
   }

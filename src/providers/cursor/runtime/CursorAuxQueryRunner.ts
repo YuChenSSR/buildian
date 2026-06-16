@@ -24,7 +24,7 @@ export class CursorAuxQueryRunner implements AuxQueryRunner {
     const cwd = getVaultPath(this.plugin.app) ?? process.cwd();
     const command = this.plugin.getResolvedProviderCliPath(CURSOR_PROVIDER_ID) ?? 'cursor-agent';
     const envText = getRuntimeEnvironmentText(
-      this.plugin.settings as unknown as Record<string, unknown>,
+      this.plugin.settings,
       CURSOR_PROVIDER_ID,
     );
     const customEnv = parseEnvironmentVariables(envText);

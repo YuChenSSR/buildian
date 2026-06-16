@@ -200,7 +200,7 @@ export class GrokChatRuntime implements ChatRuntime {
   async reloadMcpServers(): Promise<void> {}
 
   async ensureReady(options?: ChatRuntimeEnsureReadyOptions): Promise<boolean> {
-    const settings = getGrokProviderSettings(this.plugin.settings as unknown as Record<string, unknown>);
+    const settings = getGrokProviderSettings(this.plugin.settings);
     if (!settings.enabled) {
       this.setReady(false);
       return false;
@@ -209,7 +209,7 @@ export class GrokChatRuntime implements ChatRuntime {
     const cwd = getVaultPath(this.plugin.app) ?? process.cwd();
     const resolvedCliPath = this.plugin.getResolvedProviderCliPath('grok') ?? 'grok';
     const providerSettings = this.getProviderSettings();
-    const envText = getRuntimeEnvironmentText(this.plugin.settings as unknown as Record<string, unknown>, 'grok');
+    const envText = getRuntimeEnvironmentText(this.plugin.settings, 'grok');
     const launchSpec = this.buildLaunchSpec({
       command: resolvedCliPath,
       cwd,
@@ -833,7 +833,7 @@ export class GrokChatRuntime implements ChatRuntime {
 
   private getProviderSettings(): Record<string, unknown> {
     return ProviderSettingsCoordinator.getProviderSettingsSnapshot(
-      this.plugin.settings as unknown as Record<string, unknown>,
+      this.plugin.settings,
       this.providerId,
     );
   }

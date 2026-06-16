@@ -8,15 +8,15 @@
 }
 
 .claudian-hidden {
-  display: none !important;
+  display: none;
 }
 
 .claudian-visible-block {
-  display: block !important;
+  display: block;
 }
 
 .claudian-visible-flex {
-  display: flex !important;
+  display: flex;
 }
 
 .claudian-provider-icon-variant--dark {

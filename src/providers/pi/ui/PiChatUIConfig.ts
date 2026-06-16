@@ -152,7 +152,7 @@ export const piChatUIConfig: ProviderChatUIConfig = {
     }
 
     settingsBag.model = model;
-    settingsBag.effortLevel = this.getDefaultReasoningValue(model, settingsBag);
+    settingsBag.effortLevel = getPiDefaultReasoningValue(model, settingsBag);
   },
 
   applyReasoningSelection(model: string, value: string, settings: unknown): void {
@@ -260,4 +260,8 @@ function pushOption(
 
   seenValues.add(value);
   target.push(option);
+}
+
+function getPiDefaultReasoningValue(model: string, settings: Record<string, unknown>): string {
+  return piChatUIConfig.getDefaultReasoningValue(model, settings);
 }

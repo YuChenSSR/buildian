@@ -84,24 +84,24 @@
   max-height: var(--claudian-textarea-max-height, none);
   resize: none;
   padding: 8px 10px 10px 10px;
-  border: none !important;
+  border: none;
   border-radius: 6px;
-  background: transparent !important;
+  background: transparent;
   color: var(--text-normal);
   font-family: inherit;
   font-size: 14px;
   line-height: 1.4;
-  box-shadow: none !important;
+  box-shadow: none;
   overflow-y: auto;
   unicode-bidi: plaintext; /* Proper BiDi text handling for mixed RTL/LTR */
 }
 
 .claudian-input:hover,
 .claudian-input:focus {
-  outline: none !important;
-  border: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
+  outline: none;
+  border: none;
+  background: transparent;
+  box-shadow: none;
 }
 
 .claudian-input::placeholder {
@@ -253,13 +253,13 @@
 
 /* Light blue border when instruction mode is active */
 .claudian-input-instruction-mode {
-  border-color: #60a5fa !important;
+  border-color: #60a5fa;
   box-shadow: 0 0 0 1px #60a5fa;
 }
 
 /* Pink border when bash mode is active */
 .claudian-input-bang-bash-mode {
-  border-color: #f472b6 !important;
+  border-color: #f472b6;
   box-shadow: 0 0 0 1px #f472b6;
 }
 

@@ -150,7 +150,7 @@ export const grokChatUIConfig: ProviderChatUIConfig = {
     }
 
     settingsBag.model = encodeGrokModelId(rawId);
-    settingsBag.effortLevel = this.getDefaultReasoningValue(model, settingsBag);
+    settingsBag.effortLevel = getGrokDefaultReasoningValue(model, settingsBag);
   },
 
   applyReasoningSelection(model: string, value: string, settings: unknown): void {
@@ -225,4 +225,8 @@ function pushOption(
 
   seenValues.add(value);
   target.push(option);
+}
+
+function getGrokDefaultReasoningValue(model: string, settings: Record<string, unknown>): string {
+  return grokChatUIConfig.getDefaultReasoningValue(model, settings);
 }
