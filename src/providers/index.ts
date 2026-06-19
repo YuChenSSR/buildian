@@ -3,6 +3,9 @@ import { ProviderWorkspaceRegistry } from '../core/providers/ProviderWorkspaceRe
 import { cursorWorkspaceRegistration } from './cursor/app/CursorWorkspaceServices';
 import { CURSOR_PROVIDER_ID } from './cursor/models';
 import { cursorProviderRegistration } from './cursor/registration';
+import { droidWorkspaceRegistration } from './droid/app/DroidWorkspaceServices';
+import { DROID_PROVIDER_ID } from './droid/models';
+import { droidProviderRegistration } from './droid/registration';
 import { grokWorkspaceRegistration } from './grok/app/GrokWorkspaceServices';
 import { grokProviderRegistration } from './grok/registration';
 
@@ -17,6 +20,8 @@ export function registerBuiltInProviders(): void {
   ProviderWorkspaceRegistry.register('grok', grokWorkspaceRegistration);
   ProviderRegistry.register(CURSOR_PROVIDER_ID, cursorProviderRegistration);
   ProviderWorkspaceRegistry.register(CURSOR_PROVIDER_ID, cursorWorkspaceRegistration);
+  ProviderRegistry.register(DROID_PROVIDER_ID, droidProviderRegistration);
+  ProviderWorkspaceRegistry.register(DROID_PROVIDER_ID, droidWorkspaceRegistration);
   builtInProvidersRegistered = true;
 }
 

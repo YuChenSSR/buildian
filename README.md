@@ -6,9 +6,9 @@
 
 ![Preview](image.png)
 
-Buildian is an unofficial Obsidian plugin that connects your vault to ACP coding agents, including the xAI Grok Build CLI and Cursor Agent. This project is based on Claudian and modified to adapt Claudian's agent workflow for provider-backed coding CLIs.
+Buildian is an unofficial Obsidian plugin that connects your vault to ACP coding agents, including the xAI Grok Build CLI, Cursor Agent, and Factory Droid. This project is based on Claudian and modified to adapt Claudian's agent workflow for provider-backed coding CLIs.
 
-Buildian is not affiliated with, endorsed by, or sponsored by xAI, Cursor, or Anysphere.
+Buildian is not affiliated with, endorsed by, or sponsored by xAI, Cursor, Anysphere, or Factory.
 
 ## Features & Usage
 
@@ -30,7 +30,7 @@ Open the Buildian chat sidebar from the ribbon icon or command palette. Select t
 
 ## Requirements
 
-- Grok CLI installed and authenticated with `grok login`, or Cursor Agent installed and authenticated with `cursor-agent login`.
+- Grok CLI installed and authenticated with `grok login`, Cursor Agent installed and authenticated with `cursor-agent login`, or Droid CLI installed and authenticated through the Droid browser login flow.
 - Obsidian v1.7.2+
 - Desktop only (macOS, Linux, Windows)
 
@@ -109,6 +109,17 @@ If you enable Cursor Agent and encounter `spawn cursor-agent ENOENT`, the plugin
 | macOS/Linux | `which cursor-agent` | `/Users/you/.local/bin/cursor-agent` |
 | Windows (native) | `where.exe cursor-agent` | `C:\Users\you\.local\bin\cursor-agent.exe` |
 
+### Droid CLI not found
+
+If you enable Droid and encounter `spawn droid ENOENT`, the plugin can't auto-detect your Droid installation.
+
+**Solution**: Leave the Droid CLI path setting empty first so the plugin can auto-detect `droid`. If auto-detection fails, find your CLI path and set it in Settings -> Buildian -> Droid -> CLI path. Droid authentication should use the browser login flow; run `droid` once in a regular terminal if the ACP login prompt does not appear in Obsidian.
+
+| Platform | Command | Example Path |
+|----------|---------|--------------|
+| macOS/Linux | `which droid` | `/Users/you/.local/bin/droid` |
+| Windows (native) | `where.exe droid` | `C:\Users\you\.local\bin\droid.exe` |
+
 ### Can't see Grok Build model / can't connect to xAI
 
 If the Grok Build model doesn't appear or the CLI can't reach xAI, your network may require a proxy to access xAI. Configure proxy environment variables in Settings → Environment → Shared environment:
@@ -152,6 +163,7 @@ src/
 │   └── ...                      # commands, mcp, prompt, storage, tools, types
 ├── providers/
 │   ├── cursor/                  # Cursor Agent ACP adaptor
+│   ├── droid/                   # Factory Droid ACP adaptor
 │   ├── claude/                  # Claude SDK adaptor, prompt encoding, storage, MCP, plugins
 │   ├── codex/                   # Codex app-server adaptor, JSON-RPC transport, JSONL history
 │   ├── opencode/                # Opencode adaptor
@@ -172,6 +184,7 @@ src/
 
 - [x] Grok Build CLI provider integration
 - [x] Cursor Agent ACP provider integration
+- [x] Factory Droid ACP provider integration
 - [x] Local install path separated from Claudian
 - [ ] More runtime testing across platforms
 
@@ -195,3 +208,4 @@ Licensed under the [MIT License](LICENSE).
 - [Obsidian](https://obsidian.md) for the plugin API
 - [xAI](https://x.ai/) for the Grok Build CLI
 - [Cursor](https://cursor.com/) for Cursor Agent
+- [Factory](https://factory.ai/) for Droid

@@ -128,6 +128,11 @@ export const CURSOR_PROVIDER_ICON: ProviderIconSvg = {
   path: 'M4 3.5 20.5 12 4 20.5v-6.3L12.2 12 4 9.8V3.5Zm2 3.3v1.5l9.2 2.5L6 6.8Zm9.2 6.4L6 15.7v1.5l9.2-4Z',
 };
 
+export const DROID_PROVIDER_ICON: ProviderIconSvg = {
+  viewBox: '0 0 24 24',
+  path: 'M4 4h9.5c3.9 0 6.5 2.5 6.5 6.2v3.6c0 3.7-2.6 6.2-6.5 6.2H4V4Zm3 3v10h6.3c2.3 0 3.7-1.3 3.7-3.4v-3.2C17 8.3 15.6 7 13.3 7H7Zm2 2.2h2.8c1.8 0 3 1.1 3 2.8s-1.2 2.8-3 2.8H9V9.2Zm2 2.1v1.4h.7c.5 0 .8-.3.8-.7s-.3-.7-.8-.7H11Z',
+};
+
 export interface CreateProviderIconSvgOptions {
   className?: string;
   dataProvider?: string;
