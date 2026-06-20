@@ -281,6 +281,7 @@ export type AcpContentBlock =
   | AcpEmbeddedResource;
 
 export interface AcpPromptRequest {
+  _meta?: Record<string, unknown>;
   messageId?: string | null;
   prompt: AcpContentBlock[];
   sessionId: AcpSessionId;

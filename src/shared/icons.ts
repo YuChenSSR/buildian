@@ -133,6 +133,11 @@ export const DROID_PROVIDER_ICON: ProviderIconSvg = {
   path: 'M4 4h9.5c3.9 0 6.5 2.5 6.5 6.2v3.6c0 3.7-2.6 6.2-6.5 6.2H4V4Zm3 3v10h6.3c2.3 0 3.7-1.3 3.7-3.4v-3.2C17 8.3 15.6 7 13.3 7H7Zm2 2.2h2.8c1.8 0 3 1.1 3 2.8s-1.2 2.8-3 2.8H9V9.2Zm2 2.1v1.4h.7c.5 0 .8-.3.8-.7s-.3-.7-.8-.7H11Z',
 };
 
+export const AMP_PROVIDER_ICON: ProviderIconSvg = {
+  viewBox: '0 0 24 24',
+  path: 'M12 3 21 19h-3.4l-1.8-3.4H8.2L6.4 19H3L12 3Zm0 6.1-2.4 4.6h4.8L12 9.1Zm-1.1 5.9h2.2l1 1.9H9.9l1-1.9Z',
+};
+
 export interface CreateProviderIconSvgOptions {
   className?: string;
   dataProvider?: string;
