@@ -13,12 +13,15 @@ export const DROID_DEFAULT_MODEL_ID = 'default';
 export const DROID_DEFAULT_REASONING_LEVEL = 'low';
 
 const DROID_MODEL_PREFIX = `${DROID_PROVIDER_ID}:`;
-const DROID_REASONING_LEVELS = ['off', 'low', 'medium', 'high'] as const;
+const DROID_REASONING_LEVELS = ['off', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max'] as const;
 const DROID_REASONING_LABELS: Record<typeof DROID_REASONING_LEVELS[number], string> = {
   high: 'High',
   low: 'Low',
+  max: 'Max',
   medium: 'Medium',
+  minimal: 'Minimal',
   off: 'Off',
+  xhigh: 'Extra High',
 };
 
 export function isDroidModelSelectionId(model: string): boolean {
@@ -116,7 +119,7 @@ export function normalizeDroidReasoningLevel(value: unknown): string {
     return DROID_DEFAULT_REASONING_LEVEL;
   }
 
-  const normalized = value.trim().toLowerCase();
+  const normalized = normalizeDroidReasoningAlias(value.trim().toLowerCase());
   return isDroidReasoningLevel(normalized) ? normalized : DROID_DEFAULT_REASONING_LEVEL;
 }
 
@@ -152,6 +155,10 @@ export function shouldPassDroidModelToCli(rawModelId: string | null | undefined)
 
 function isDroidReasoningLevel(value: string): value is typeof DROID_REASONING_LEVELS[number] {
   return (DROID_REASONING_LEVELS as readonly string[]).includes(value);
+}
+
+function normalizeDroidReasoningAlias(value: string): string {
+  return value === 'extra high' || value === 'extra-high' ? 'xhigh' : value;
 }
 
 function normalizeContextWindow(value: unknown): number | undefined {

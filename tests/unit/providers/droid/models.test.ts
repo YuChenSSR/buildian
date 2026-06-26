@@ -24,13 +24,22 @@ describe('Droid model helpers', () => {
 
   it('normalizes Droid reasoning levels to the exec-supported set', () => {
     expect(DROID_DEFAULT_REASONING_LEVEL).toBe('low');
-    expect(getDroidReasoningOptions().map(option => option.value)).toEqual([
+    const options = getDroidReasoningOptions();
+    expect(options.map(option => option.value)).toEqual([
       'off',
+      'minimal',
       'low',
       'medium',
       'high',
+      'xhigh',
+      'max',
     ]);
+    expect(options.find(option => option.value === 'xhigh')?.label).toBe('Extra High');
     expect(normalizeDroidReasoningLevel(' HIGH ')).toBe('high');
-    expect(normalizeDroidReasoningLevel('max')).toBe(DROID_DEFAULT_REASONING_LEVEL);
+    expect(normalizeDroidReasoningLevel('max')).toBe('max');
+    expect(normalizeDroidReasoningLevel('XHIGH')).toBe('xhigh');
+    expect(normalizeDroidReasoningLevel('extra high')).toBe('xhigh');
+    expect(normalizeDroidReasoningLevel('extra-high')).toBe('xhigh');
+    expect(normalizeDroidReasoningLevel('not-real')).toBe(DROID_DEFAULT_REASONING_LEVEL);
   });
 });
