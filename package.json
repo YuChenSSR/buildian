@@ -1,6 +1,6 @@
 {
   "name": "buildian",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Unofficial ACP coding-agent bridge for xAI Grok Build, Amp, Cursor Agent, and Factory Droid, based on Claudian.",
   "main": "main.js",
   "scripts": {
