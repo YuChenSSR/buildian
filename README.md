@@ -24,7 +24,7 @@ Open the Buildian chat sidebar from the ribbon icon or command palette. Select t
 
 **Instruction Mode (`#`)** — Refined custom instructions added from the chat input.
 
-**Image Attachments** — Paste or drop images into the chat input for Grok Build, Amp, and Cursor Agent. Factory Droid is excluded because its headless CLI mode does not accept image input regardless of the selected model.
+**Image Attachments** — Paste or drop images into the chat input. Whether the model can actually see the image depends on the selected model's vision support. For Factory Droid BYOK custom models, the model must support vision and must not be marked `noImageSupport: true` in `~/.factory/settings.json`.
 
 **MCP Servers** — The runtime manages MCP through its own CLI-native configuration.
 

@@ -9,7 +9,7 @@ export const DROID_PROVIDER_CAPABILITIES: Readonly<ProviderCapabilities> = Objec
   supportsRewind: false,
   supportsFork: false,
   supportsProviderCommands: true,
-  supportsImageAttachments: false,
+  supportsImageAttachments: true,
   supportsInstructionMode: true,
   supportsMcpTools: false,
   supportsTurnSteer: false,

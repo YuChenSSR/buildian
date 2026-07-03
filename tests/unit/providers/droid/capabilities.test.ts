@@ -6,7 +6,7 @@ describe('DROID_PROVIDER_CAPABILITIES', () => {
       providerId: 'droid',
       reasoningControl: 'effort',
       supportsFork: false,
-      supportsImageAttachments: false,
+      supportsImageAttachments: true,
       supportsInstructionMode: true,
       supportsMcpTools: false,
       supportsPersistentRuntime: true,
