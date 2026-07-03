@@ -6,7 +6,7 @@ describe('GROK_PROVIDER_CAPABILITIES', () => {
       providerId: 'grok',
       reasoningControl: 'effort',
       supportsFork: false,
-      supportsImageAttachments: false,
+      supportsImageAttachments: true,
       supportsInstructionMode: true,
       supportsMcpTools: false,
       supportsPersistentRuntime: true,

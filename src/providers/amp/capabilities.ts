@@ -9,7 +9,7 @@ export const AMP_PROVIDER_CAPABILITIES: Readonly<ProviderCapabilities> = Object.
   supportsRewind: false,
   supportsFork: false,
   supportsProviderCommands: true,
-  supportsImageAttachments: false,
+  supportsImageAttachments: true,
   supportsInstructionMode: true,
   supportsMcpTools: false,
   supportsTurnSteer: false,

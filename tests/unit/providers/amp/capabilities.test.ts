@@ -6,7 +6,7 @@ describe('AMP_PROVIDER_CAPABILITIES', () => {
       providerId: 'amp',
       reasoningControl: 'effort',
       supportsFork: false,
-      supportsImageAttachments: false,
+      supportsImageAttachments: true,
       supportsInstructionMode: true,
       supportsMcpTools: false,
       supportsNativeHistory: false,

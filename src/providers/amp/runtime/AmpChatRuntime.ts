@@ -68,6 +68,7 @@ import { getAmpProviderSettings } from '../settings';
 import type { AmpProviderState } from '../types';
 import { getAmpState } from '../types';
 import { buildAmpAcpAdapterArgs } from './AmpCliResolver';
+import { stageAmpImageAttachments } from './AmpImageStaging';
 import { buildAmpPromptBlocks, buildAmpPromptText } from './buildAmpPrompt';
 
 interface ActiveTurn {
@@ -323,12 +324,14 @@ export class AmpChatRuntime implements ChatRuntime {
 
     const activeTurn = this.activeTurn;
     const requestMeta = this.resolveAmpRequestMeta(this.getProviderSettings());
+    const stagedImages = stageAmpImageAttachments(turn.request.images);
     const promptPromise = this.connection.prompt({
       _meta: { 'acp-amp': requestMeta },
       prompt: buildAmpPromptBlocks(
         turn.request,
         shouldBootstrapHistory ? previousMessages : [],
         this.getAmpSystemPrompt(),
+        stagedImages?.paths ?? [],
       ),
       sessionId,
     }).then((response) => {
@@ -356,6 +359,7 @@ export class AmpChatRuntime implements ChatRuntime {
       activeTurn.queue.push({ type: 'done' });
       activeTurn.queue.close();
     }).finally(() => {
+      stagedImages?.cleanup();
       if (this.activeTurn === activeTurn) {
         this.activeTurn = null;
       }

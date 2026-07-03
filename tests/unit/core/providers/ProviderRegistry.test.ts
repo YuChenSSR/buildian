@@ -95,7 +95,7 @@ describe('ProviderRegistry', () => {
     expect(caps.providerId).toBe('grok');
     expect(caps.supportsProviderCommands).toBe(true);
     expect(caps.supportsInstructionMode).toBe(true);
-    expect(caps.supportsImageAttachments).toBe(false);
+    expect(caps.supportsImageAttachments).toBe(true);
     expect(caps.supportsFork).toBe(false);
     expect(caps.reasoningControl).toBe('effort');
   });

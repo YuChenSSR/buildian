@@ -46,5 +46,21 @@ export function buildGrokPromptBlocks(
   request: ChatTurnRequest,
   conversationHistory: ChatMessage[] = [],
 ): AcpContentBlock[] {
-  return [{ type: 'text', text: buildGrokPromptText(request, conversationHistory) }];
+  const blocks: AcpContentBlock[] = [
+    { type: 'text', text: buildGrokPromptText(request, conversationHistory) },
+  ];
+
+  for (const image of request.images ?? []) {
+    if (!image.data) {
+      continue;
+    }
+
+    blocks.push({
+      data: image.data,
+      mimeType: image.mediaType,
+      type: 'image',
+    });
+  }
+
+  return blocks;
 }

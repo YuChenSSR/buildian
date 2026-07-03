@@ -1,3 +1,5 @@
+import * as path from 'node:path';
+
 import type { ChatTurnRequest } from '../../../core/runtime/types';
 import type { ChatMessage } from '../../../core/types';
 import { appendBrowserContext } from '../../../utils/browser';
@@ -47,10 +49,23 @@ export function buildAmpPromptBlocks(
   request: ChatTurnRequest,
   conversationHistory: ChatMessage[] = [],
   systemPrompt = '',
+  imageFilePaths: readonly string[] = [],
 ): AcpContentBlock[] {
-  return [
-    { type: 'text', text: buildAmpPromptText(request, conversationHistory, systemPrompt) },
-  ];
+  let text = buildAmpPromptText(request, conversationHistory, systemPrompt);
+  if (imageFilePaths.length > 0) {
+    text += '\n\nThe user attached the image files linked below. View them before responding.';
+  }
+
+  const blocks: AcpContentBlock[] = [{ type: 'text', text }];
+  for (const filePath of imageFilePaths) {
+    blocks.push({
+      name: path.basename(filePath),
+      type: 'resource_link',
+      uri: filePath,
+    });
+  }
+
+  return blocks;
 }
 
 export function prependAmpSystemInstructions(prompt: string, systemPrompt: string): string {
