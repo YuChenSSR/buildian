@@ -8,11 +8,12 @@ import {
 } from '../../utils/env';
 import {
   CURSOR_DEFAULT_MODEL_ID,
-  CURSOR_DEFAULT_REASONING_LEVEL,
   CURSOR_PROVIDER_ID,
   type CursorDiscoveredModel,
+  getCursorDefaultReasoningLevel,
+  getCursorReasoningOptions,
   normalizeCursorDiscoveredModels,
-  normalizeCursorReasoningLevel,
+  normalizeCursorReasoningLevelForModel,
   normalizeCursorVisibleModels,
   normalizeRawModelId,
 } from './models';
@@ -215,8 +216,12 @@ function normalizeCursorPreferredEffortByModel(
       continue;
     }
 
-    const normalizedEffort = normalizeCursorReasoningLevel(effort);
-    if (normalizedEffort !== CURSOR_DEFAULT_REASONING_LEVEL) {
+    if (getCursorReasoningOptions(rawId).length === 0) {
+      continue;
+    }
+
+    const normalizedEffort = normalizeCursorReasoningLevelForModel(rawId, effort);
+    if (normalizedEffort !== getCursorDefaultReasoningLevel(rawId)) {
       normalized[rawId] = normalizedEffort;
     }
   }

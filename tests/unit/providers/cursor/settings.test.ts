@@ -114,4 +114,30 @@ describe('Cursor settings normalization', () => {
     expect(next.modelAliases).toEqual({ 'claude-4.6-opus-max-thinking': 'Auto' });
     expect(next.visibleModels).toEqual(['claude-4.6-opus-max-thinking']);
   });
+
+  it('normalizes preferred efforts against each Cursor model family', () => {
+    const currentModels = [
+      { label: 'GPT 5.5', rawId: 'gpt-5.5[context=272k,reasoning=medium,fast=false]' },
+      { label: 'Grok 4.5', rawId: 'grok-4.5[effort=high,fast=true]' },
+      { label: 'Kimi K2.7', rawId: 'kimi-k2.7-code[]' },
+    ];
+
+    const settings = getCursorProviderSettings({
+      providerConfigs: {
+        'cursor-agent': {
+          discoveredModels: currentModels,
+          preferredEffortByModel: {
+            'gpt-5.5[context=272k,reasoning=medium,fast=false]': 'max',
+            'grok-4.5[effort=high,fast=true]': 'low',
+            'kimi-k2.7-code[]': 'high',
+          },
+          visibleModels: currentModels.map(model => model.rawId),
+        },
+      },
+    });
+
+    expect(settings.preferredEffortByModel).toEqual({
+      'grok-4.5[effort=high,fast=true]': 'low',
+    });
+  });
 });

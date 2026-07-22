@@ -12,9 +12,10 @@ import {
   CURSOR_PROVIDER_ID,
   decodeCursorModelId,
   encodeCursorModelId,
+  getCursorDefaultReasoningLevel,
   getCursorReasoningOptions,
   isCursorModelSelectionId,
-  normalizeCursorReasoningLevel,
+  normalizeCursorReasoningLevelForModel,
   normalizeRawModelId,
 } from '../models';
 import {
@@ -106,11 +107,13 @@ export const cursorChatUIConfig: ProviderChatUIConfig = {
   },
 
   isAdaptiveReasoningModel(model: string): boolean {
-    return isCursorModelSelectionId(model);
+    const rawId = getCursorSelectionRawModelId(model);
+    return rawId !== null && getCursorReasoningOptions(rawId).length > 0;
   },
 
   getReasoningOptions(model: string): ProviderReasoningOption[] {
-    return isCursorModelSelectionId(model) ? getCursorReasoningOptions() : [];
+    const rawId = getCursorSelectionRawModelId(model);
+    return rawId ? getCursorReasoningOptions(rawId) : [];
   },
 
   getDefaultReasoningValue(model: string, settings: Record<string, unknown>): string {
@@ -120,9 +123,10 @@ export const cursorChatUIConfig: ProviderChatUIConfig = {
     }
 
     const cursorSettings = getCursorProviderSettings(settings);
-    return normalizeCursorReasoningLevel(
+    return normalizeCursorReasoningLevelForModel(
+      rawId,
       cursorSettings.preferredEffortByModel[rawId]
-        ?? CURSOR_DEFAULT_REASONING_LEVEL,
+        ?? getCursorDefaultReasoningLevel(rawId),
     );
   },
 
@@ -173,8 +177,8 @@ export const cursorChatUIConfig: ProviderChatUIConfig = {
     const nextPreferred = {
       ...getCursorProviderSettings(settingsBag).preferredEffortByModel,
     };
-    const normalized = normalizeCursorReasoningLevel(value);
-    if (normalized === CURSOR_DEFAULT_REASONING_LEVEL) {
+    const normalized = normalizeCursorReasoningLevelForModel(rawId, value);
+    if (normalized === getCursorDefaultReasoningLevel(rawId)) {
       delete nextPreferred[rawId];
     } else {
       nextPreferred[rawId] = normalized;
@@ -236,6 +240,14 @@ function pushOption(
 function normalizeDecodedRawModelId(model: string): string | null {
   const rawId = decodeCursorModelId(model);
   return rawId ? normalizeRawModelId(rawId) : null;
+}
+
+function getCursorSelectionRawModelId(model: string): string | null {
+  if (!isCursorModelSelectionId(model)) {
+    return null;
+  }
+
+  return normalizeDecodedRawModelId(model) ?? CURSOR_DEFAULT_MODEL_ID;
 }
 
 function getCursorDefaultReasoningValue(model: string, settings: Record<string, unknown>): string {

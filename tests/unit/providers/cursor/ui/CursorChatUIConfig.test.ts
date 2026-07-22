@@ -20,6 +20,24 @@ describe('cursorChatUIConfig reasoning controls', () => {
     )).toBe('max');
   });
 
+  it('uses model-specific defaults for GPT and Grok', () => {
+    expect(cursorChatUIConfig.getDefaultReasoningValue(
+      encodeCursorModelId('gpt-5.5[context=272k,reasoning=medium,fast=false]'),
+      {},
+    )).toBe('extra-high');
+    expect(cursorChatUIConfig.getDefaultReasoningValue(
+      encodeCursorModelId('grok-4.5[effort=high,fast=true]'),
+      {},
+    )).toBe('high');
+  });
+
+  it('does not expose adaptive reasoning controls for Kimi', () => {
+    const model = encodeCursorModelId('kimi-k2.7-code[]');
+
+    expect(cursorChatUIConfig.isAdaptiveReasoningModel(model, {})).toBe(false);
+    expect(cursorChatUIConfig.getReasoningOptions(model, {})).toEqual([]);
+  });
+
   it('persists an explicit non-default effort selection for the selected model', () => {
     const settings: Record<string, unknown> = {
       providerConfigs: {

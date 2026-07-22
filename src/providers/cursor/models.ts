@@ -23,7 +23,57 @@ const CURSOR_REASONING_LEVELS = [
   'extra-high',
   'max',
 ] as const;
-const CURSOR_REASONING_LABELS: Record<typeof CURSOR_REASONING_LEVELS[number], string> = {
+type CursorReasoningLevel = typeof CURSOR_REASONING_LEVELS[number];
+
+interface CursorCliModelProfile {
+  implicitEfforts?: readonly CursorReasoningLevel[];
+  normalizeExtraHighToXhigh?: boolean;
+  publicBase: string;
+  reasoningLevels: readonly CursorReasoningLevel[];
+}
+
+// ACP exposes parameterized family ids while `--model` accepts concrete public ids.
+// Cursor's effort names and default suffixes vary by family, so generic concatenation is unsafe.
+const GPT_5_6_REASONING_LEVELS = [
+  'none',
+  'low',
+  'medium',
+  'high',
+  'xhigh',
+  'max',
+] as const satisfies readonly CursorReasoningLevel[];
+const GPT_5_5_REASONING_LEVELS = [
+  'none',
+  'low',
+  'medium',
+  'high',
+  'extra-high',
+] as const satisfies readonly CursorReasoningLevel[];
+const GPT_STANDARD_REASONING_LEVELS = [
+  'low',
+  'medium',
+  'high',
+  'xhigh',
+] as const satisfies readonly CursorReasoningLevel[];
+const GPT_SMALL_REASONING_LEVELS = [
+  'none',
+  'low',
+  'medium',
+  'high',
+  'xhigh',
+] as const satisfies readonly CursorReasoningLevel[];
+const GPT_5_1_REASONING_LEVELS = [
+  'low',
+  'medium',
+  'high',
+] as const satisfies readonly CursorReasoningLevel[];
+const GROK_REASONING_LEVELS = [
+  'low',
+  'medium',
+  'high',
+] as const satisfies readonly CursorReasoningLevel[];
+const NO_REASONING_LEVELS = [] as const satisfies readonly CursorReasoningLevel[];
+const CURSOR_REASONING_LABELS: Record<CursorReasoningLevel, string> = {
   'extra-high': 'Extra High',
   high: 'High',
   low: 'Low',
@@ -132,11 +182,37 @@ export function normalizeCursorReasoningLevel(value: unknown): string {
   return isCursorReasoningLevel(normalized) ? normalized : CURSOR_DEFAULT_REASONING_LEVEL;
 }
 
-export function getCursorReasoningOptions(): ProviderReasoningOption[] {
-  return CURSOR_REASONING_LEVELS.map((level) => ({
+export function getCursorReasoningOptions(rawModelId?: string): ProviderReasoningOption[] {
+  return getCursorReasoningLevels(rawModelId).map((level) => ({
     label: CURSOR_REASONING_LABELS[level],
     value: level,
   }));
+}
+
+export function getCursorDefaultReasoningLevel(rawModelId: string): string {
+  const levels = getCursorReasoningLevels(rawModelId);
+  const preferredOrder: readonly CursorReasoningLevel[] = [
+    'max',
+    'extra-high',
+    'xhigh',
+    'high',
+    'medium',
+    'low',
+    'none',
+  ];
+  return preferredOrder.find(level => levels.includes(level))
+    ?? CURSOR_DEFAULT_REASONING_LEVEL;
+}
+
+export function normalizeCursorReasoningLevelForModel(
+  rawModelId: string,
+  value: unknown,
+): string {
+  const normalized = normalizeCursorReasoningLevel(value);
+  const levels = getCursorReasoningLevels(rawModelId);
+  return levels.includes(normalized as CursorReasoningLevel)
+    ? normalized
+    : getCursorDefaultReasoningLevel(rawModelId);
 }
 
 export function buildCursorDefaultModelOptions(): ProviderUIOption[] {
@@ -205,7 +281,7 @@ export function resolveCursorCliModelId(rawModelId: string, effort: unknown): st
     );
   }
 
-  const normalizedEffort = normalizeCursorReasoningLevel(effort);
+  const normalizedEffort = normalizeCursorReasoningLevelForModel(normalizedRawId, effort);
   const publicModelId = buildCursorPublicModelIdFromAcpId(normalizedRawId, normalizedEffort);
   return publicModelId ?? applyCursorReasoningLevel(normalizedRawId, normalizedEffort);
 }
@@ -271,6 +347,18 @@ function buildCursorPublicModelIdFromAcpId(
   const params = parseCursorModelParameters(rawModelId);
   const thinking = params.get('thinking')?.toLowerCase() === 'true';
   const fast = params.get('fast')?.toLowerCase() === 'true';
+  const profile = getCursorCliModelProfile(acpBase);
+  if (profile) {
+    const publicEffort = profile.normalizeExtraHighToXhigh && effort === 'extra-high'
+      ? 'xhigh'
+      : effort;
+    const effortSuffix = profile.reasoningLevels.length === 0
+      || profile.implicitEfforts?.includes(effort as CursorReasoningLevel)
+      ? ''
+      : `-${publicEffort}`;
+    return `${profile.publicBase}${effortSuffix}${fast ? '-fast' : ''}`;
+  }
+
   const publicBase = normalizeCursorPublicBaseModelId(acpBase);
   if (!publicBase) {
     return null;
@@ -305,8 +393,93 @@ function buildCursorPublicModelIdFromAcpId(
       : `${publicBase}-${publicEffort}${fastSuffix}`;
   }
 
-  if (publicBase.startsWith('gpt-')) {
-    return `${publicBase}-${publicEffort}${fastSuffix}`;
+  return null;
+}
+
+function getCursorReasoningLevels(
+  rawModelId?: string,
+): readonly CursorReasoningLevel[] {
+  if (!rawModelId) {
+    return CURSOR_REASONING_LEVELS;
+  }
+
+  const profile = getCursorCliModelProfile(getCursorBaseModelId(rawModelId));
+  return profile?.reasoningLevels ?? CURSOR_REASONING_LEVELS;
+}
+
+function getCursorBaseModelId(rawModelId: string): string {
+  const normalized = decodeCursorModelId(rawModelId.trim()) ?? rawModelId.trim();
+  const bracketStart = normalized.indexOf('[');
+  return bracketStart > 0 ? normalized.slice(0, bracketStart) : normalized;
+}
+
+function getCursorCliModelProfile(acpBase: string): CursorCliModelProfile | null {
+  if (/^gpt-5\.6-(?:sol|terra|luna)$/.test(acpBase)) {
+    return {
+      publicBase: acpBase,
+      reasoningLevels: GPT_5_6_REASONING_LEVELS,
+    };
+  }
+
+  if (acpBase === 'gpt-5.5') {
+    return {
+      publicBase: acpBase,
+      reasoningLevels: GPT_5_5_REASONING_LEVELS,
+    };
+  }
+
+  if (acpBase === 'gpt-5.4' || acpBase === 'gpt-5.3-codex' || acpBase === 'gpt-5.2') {
+    return {
+      ...(acpBase === 'gpt-5.3-codex' || acpBase === 'gpt-5.2'
+        ? { implicitEfforts: ['medium'] as const }
+        : {}),
+      publicBase: acpBase,
+      reasoningLevels: GPT_STANDARD_REASONING_LEVELS,
+    };
+  }
+
+  if (acpBase === 'gpt-5.4-mini' || acpBase === 'gpt-5.4-nano') {
+    return {
+      publicBase: acpBase,
+      reasoningLevels: GPT_SMALL_REASONING_LEVELS,
+    };
+  }
+
+  if (acpBase === 'gpt-5.1') {
+    return {
+      implicitEfforts: ['medium'],
+      publicBase: acpBase,
+      reasoningLevels: GPT_5_1_REASONING_LEVELS,
+    };
+  }
+
+  if (acpBase === 'gpt-5-mini') {
+    return {
+      publicBase: acpBase,
+      reasoningLevels: NO_REASONING_LEVELS,
+    };
+  }
+
+  if (acpBase.startsWith('gpt-')) {
+    return {
+      normalizeExtraHighToXhigh: true,
+      publicBase: acpBase,
+      reasoningLevels: CURSOR_REASONING_LEVELS,
+    };
+  }
+
+  if (acpBase.startsWith('grok-')) {
+    return {
+      publicBase: `cursor-${acpBase}`,
+      reasoningLevels: GROK_REASONING_LEVELS,
+    };
+  }
+
+  if (acpBase.startsWith('kimi-')) {
+    return {
+      publicBase: acpBase,
+      reasoningLevels: NO_REASONING_LEVELS,
+    };
   }
 
   return null;
@@ -326,7 +499,6 @@ function normalizeCursorPublicBaseModelId(acpBase: string): string | null {
   if (
     /^claude-opus-4-[78]$/.test(acpBase)
     || acpBase.startsWith('claude-fable-')
-    || acpBase.startsWith('gpt-')
   ) {
     return acpBase;
   }
