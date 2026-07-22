@@ -4,7 +4,7 @@ describe('AMP_PROVIDER_CAPABILITIES', () => {
   it('describes Amp as an ACP-backed provider', () => {
     expect(AMP_PROVIDER_CAPABILITIES).toMatchObject({
       providerId: 'amp',
-      reasoningControl: 'effort',
+      reasoningControl: 'none',
       supportsFork: false,
       supportsImageAttachments: true,
       supportsInstructionMode: true,

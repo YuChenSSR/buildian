@@ -5,6 +5,7 @@ import { findCliBinaryPath, resolveConfiguredCliPath } from '../../../utils/cliB
 import { getHostnameKey, parseEnvironmentVariables } from '../../../utils/env';
 import { AMP_PROVIDER_ID } from '../models';
 import { getAmpProviderSettings } from '../settings';
+import { BUNDLED_AMP_ACP_ADAPTER_SOURCE } from './bundledAmpAcpAdapter';
 
 export class AmpCliResolver {
   private readonly cachedHostname = getHostnameKey();
@@ -44,8 +45,9 @@ export class AmpCliResolver {
     const customEnv = parseEnvironmentVariables(envText || '');
     return resolveConfiguredCliPath(hostnamePath)
       ?? resolveConfiguredCliPath(legacyPath.trim())
-      ?? findCliBinaryPath('acp-amp', customEnv.PATH)
-      ?? findCliBinaryPath('npx', customEnv.PATH);
+      ?? findCliBinaryPath('node', customEnv.PATH)
+      ?? findCliBinaryPath('amp-acp', customEnv.PATH)
+      ?? null;
   }
 
   reset(): void {
@@ -58,8 +60,8 @@ export class AmpCliResolver {
 
 export function buildAmpAcpAdapterArgs(command: string): string[] {
   const basename = path.basename(command).toLowerCase();
-  if (basename === 'npx' || basename === 'npx.cmd' || basename === 'npx.exe') {
-    return ['@superagenticai/acp-amp'];
+  if (basename === 'node' || basename === 'node.exe') {
+    return ['--input-type=module', '--eval', BUNDLED_AMP_ACP_ADAPTER_SOURCE];
   }
   return [];
 }

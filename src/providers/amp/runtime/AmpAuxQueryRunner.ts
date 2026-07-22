@@ -3,11 +3,12 @@ import * as path from 'node:path';
 
 import type { AuxQueryConfig, AuxQueryRunner } from '../../../core/auxiliary/AuxQueryRunner';
 import { getRuntimeEnvironmentText } from '../../../core/providers/providerEnvironment';
+import { ProviderSettingsCoordinator } from '../../../core/providers/ProviderSettingsCoordinator';
 import type ClaudianPlugin from '../../../main';
 import { findCliBinaryPath } from '../../../utils/cliBinaryLocator';
 import { getEnhancedPath, parseEnvironmentVariables } from '../../../utils/env';
 import { getVaultPath } from '../../../utils/path';
-import { AMP_PROVIDER_ID } from '../models';
+import { AMP_PROVIDER_ID, resolveAmpAgentMode } from '../models';
 import { prependAmpSystemInstructions } from './buildAmpPrompt';
 
 export class AmpAuxQueryRunner implements AuxQueryRunner {
@@ -28,10 +29,16 @@ export class AmpAuxQueryRunner implements AuxQueryRunner {
       ...customEnv,
       PATH: getEnhancedPath(customEnv.PATH, path.isAbsolute(command) ? command : undefined),
     };
-    const args = [
-      '-x',
+    const providerSettings = ProviderSettingsCoordinator.getProviderSettingsSnapshot(
+      this.plugin.settings,
+      AMP_PROVIDER_ID,
+    );
+    const selectedModel = config.model
+      ?? (typeof providerSettings.model === 'string' ? providerSettings.model : undefined);
+    const args = buildAmpAuxQueryArgs(
+      selectedModel,
       prependAmpSystemInstructions(prompt, config.systemPrompt).trim(),
-    ];
+    );
 
     return new Promise<string>((resolve, reject) => {
       const proc = spawn(command, args, {
@@ -92,6 +99,13 @@ export class AmpAuxQueryRunner implements AuxQueryRunner {
     this.activeProcess?.kill('SIGTERM');
     this.activeProcess = null;
   }
+}
+
+export function buildAmpAuxQueryArgs(
+  model: string | null | undefined,
+  prompt: string,
+): string[] {
+  return ['--mode', resolveAmpAgentMode(model), '-x', prompt];
 }
 
 function formatExitError(code: number | null, signal: string | null, stderr: string): string {

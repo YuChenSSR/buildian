@@ -13,5 +13,5 @@ export const AMP_PROVIDER_CAPABILITIES: Readonly<ProviderCapabilities> = Object.
   supportsInstructionMode: true,
   supportsMcpTools: false,
   supportsTurnSteer: false,
-  reasoningControl: 'effort',
+  reasoningControl: 'none',
 });

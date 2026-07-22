@@ -17,7 +17,7 @@ const EXTENSION_BY_MEDIA_TYPE: Record<string, string> = {
 };
 
 /**
- * The acp-amp adapter drops inline `image` content blocks, but the Amp CLI can
+ * Amp ACP adapters drop inline `image` content blocks, but the Amp CLI can
  * view image files referenced by path. Stage attachments as temp files so the
  * prompt can link them instead of embedding base64 data.
  */

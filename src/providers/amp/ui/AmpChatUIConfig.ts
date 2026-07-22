@@ -8,8 +8,6 @@ import { AMP_PROVIDER_ICON } from '../../../shared/icons';
 import {
   AMP_CONTEXT_WINDOW,
   buildAmpModelOptions,
-  getAmpDefaultEffort,
-  getAmpReasoningOptions,
   isAmpModelSelectionId,
   normalizeAmpModelId,
 } from '../models';
@@ -31,15 +29,15 @@ export const ampChatUIConfig: ProviderChatUIConfig = {
   },
 
   isAdaptiveReasoningModel(_model: string): boolean {
-    return true;
+    return false;
   },
 
-  getReasoningOptions(model: string): ProviderReasoningOption[] {
-    return isAmpModelSelectionId(model) ? getAmpReasoningOptions(model) : [];
+  getReasoningOptions(_model: string): ProviderReasoningOption[] {
+    return [];
   },
 
-  getDefaultReasoningValue(model: string): string {
-    return getAmpDefaultEffort(model);
+  getDefaultReasoningValue(_model: string): string {
+    return '';
   },
 
   getContextWindowSize(
@@ -60,7 +58,7 @@ export const ampChatUIConfig: ProviderChatUIConfig = {
 
     const settingsBag = settings as Record<string, unknown>;
     settingsBag.model = normalizeAmpModelId(model);
-    settingsBag.effortLevel = getAmpDefaultEffort(model);
+    settingsBag.effortLevel = '';
   },
 
   applyReasoningSelection(_model: string, _value: string, _settings: unknown): void {},

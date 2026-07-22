@@ -31,6 +31,7 @@ import type {
   ToolCallInfo,
 } from '../../../core/types';
 import type ClaudianPlugin from '../../../main';
+import { findCliBinaryPath } from '../../../utils/cliBinaryLocator';
 import { getEnhancedPath, parseEnvironmentVariables } from '../../../utils/env';
 import { getVaultPath } from '../../../utils/path';
 import {
@@ -58,9 +59,7 @@ import {
   AMP_MODEL_ID,
   AMP_PROVIDER_ID,
   type AmpAgentMode,
-  ampModeSupportsEffort,
   isAmpModelSelectionId,
-  normalizeAmpEffort,
   normalizeAmpModelId,
   resolveAmpAgentMode,
 } from '../models';
@@ -214,7 +213,7 @@ export class AmpChatRuntime implements ChatRuntime {
     }
 
     const cwd = getVaultPath(this.plugin.app) ?? process.cwd();
-    const resolvedCliPath = this.plugin.getResolvedProviderCliPath(AMP_PROVIDER_ID) ?? 'acp-amp';
+    const resolvedCliPath = this.plugin.getResolvedProviderCliPath(AMP_PROVIDER_ID) ?? 'node';
     const providerSettings = this.getProviderSettings();
     const envText = getRuntimeEnvironmentText(
       this.plugin.settings,
@@ -225,7 +224,6 @@ export class AmpChatRuntime implements ChatRuntime {
       agentMode: requestMeta.mode,
       command: resolvedCliPath,
       cwd,
-      effort: requestMeta.effort ?? '',
       envText,
       permissionMode: this.resolvePermissionMode(providerSettings),
       systemPromptKey: this.getAmpSystemPromptKey(),
@@ -498,18 +496,23 @@ export class AmpChatRuntime implements ChatRuntime {
     agentMode: string;
     command: string;
     cwd: string;
-    effort: string;
     envText: string;
     permissionMode: string;
     systemPromptKey: string;
   }): AmpLaunchSpec {
     const args = buildAmpAcpAdapterArgs(params.command);
     const customEnv = parseEnvironmentVariables(params.envText);
-    const env = {
+    const env: NodeJS.ProcessEnv = {
       ...process.env,
       ...customEnv,
       PATH: getEnhancedPath(customEnv.PATH, path.isAbsolute(params.command) ? params.command : undefined),
     };
+    const ampCliPath = typeof env.AMP_CLI_PATH === 'string' && env.AMP_CLI_PATH.trim()
+      ? env.AMP_CLI_PATH
+      : findCliBinaryPath('amp', env.PATH);
+    if (ampCliPath) {
+      env.AMP_CLI_PATH = ampCliPath;
+    }
     return {
       args,
       command: params.command,
@@ -521,12 +524,11 @@ export class AmpChatRuntime implements ChatRuntime {
         cwd: params.cwd,
         envText: params.envText,
       }),
-      // Amp binds `--mode`/`--effort` when a thread is created, so a change must
-      // start a fresh session. Folding them into the session config key triggers
-      // invalidation in `ensureReady`.
+      // Amp binds its mode when a thread is created, so a change must start a
+      // fresh session. Folding it into this key triggers invalidation in
+      // `ensureReady`.
       sessionConfigKey: JSON.stringify({
         agentMode: params.agentMode,
-        effort: params.effort,
         permissionMode: params.permissionMode,
         systemPromptKey: params.systemPromptKey,
       }),
@@ -585,6 +587,14 @@ export class AmpChatRuntime implements ChatRuntime {
     if (methods.length === 0) {
       return;
     }
+    // The Registry amp-acp adapter always advertises its interactive API-key
+    // setup method, even when the installed Amp CLI is already logged in.
+    if (
+      normalizeComparableKey(initResponse.agentInfo?.name) === 'amp-acp'
+      && methods.every(method => normalizeComparableKey(method.id) === 'setup')
+    ) {
+      return;
+    }
 
     const method = methods.find(entry => entry.type !== 'env_var' && entry.id === 'amp_login')
       ?? methods.find(entry => entry.type !== 'env_var' && entry.id.toLowerCase().includes('login'))
@@ -637,7 +647,7 @@ export class AmpChatRuntime implements ChatRuntime {
       this.loadedSessionId = response.sessionId;
       this.sessionId = response.sessionId;
       this.sessionCwds.set(response.sessionId, cwd);
-      await this.applySelectedSessionMode({
+      await this.applySelectedSessionConfig({
         configOptions: response.configOptions ?? null,
         modes: response.modes ?? null,
         sessionId: response.sessionId,
@@ -667,7 +677,7 @@ export class AmpChatRuntime implements ChatRuntime {
       this.loadedSessionId = response.sessionId;
       this.sessionId = response.sessionId;
       this.sessionCwds.set(response.sessionId, cwd);
-      await this.applySelectedSessionMode({
+      await this.applySelectedSessionConfig({
         configOptions: response.configOptions ?? null,
         modes: response.modes ?? null,
         sessionId: response.sessionId,
@@ -748,7 +758,7 @@ export class AmpChatRuntime implements ChatRuntime {
     }
   }
 
-  private async applySelectedSessionMode(params: {
+  private async applySelectedSessionConfig(params: {
     configOptions?: AcpSessionConfigOption[] | null;
     modes?: AcpSessionModeState | null;
     sessionId: string;
@@ -757,8 +767,26 @@ export class AmpChatRuntime implements ChatRuntime {
       return;
     }
 
-    const configOptions = params.configOptions ?? null;
+    let configOptions = params.configOptions ?? null;
     const providerSettings = this.getProviderSettings();
+    const selectedMode = resolveAmpAgentMode(
+      typeof providerSettings.model === 'string' ? providerSettings.model : '',
+    );
+    const modelOption = findSelectConfigOption(configOptions, 'model');
+
+    if (
+      modelOption
+      && modelOption.currentValue !== selectedMode
+      && selectConfigHasValue(modelOption, selectedMode)
+    ) {
+      const response = await this.connection.setConfigOption({
+        configId: modelOption.id,
+        sessionId: params.sessionId,
+        type: 'select',
+        value: selectedMode,
+      });
+      configOptions = response.configOptions ?? configOptions;
+    }
 
     const modeState = extractAcpSessionModeState({
       configOptions,
@@ -897,15 +925,9 @@ export class AmpChatRuntime implements ChatRuntime {
 
   private resolveAmpRequestMeta(
     providerSettings: Record<string, unknown>,
-  ): { effort?: string; mode: AmpAgentMode } {
+  ): { mode: AmpAgentMode } {
     const model = typeof providerSettings.model === 'string' ? providerSettings.model : '';
-    const mode = resolveAmpAgentMode(model);
-    if (!ampModeSupportsEffort(mode)) {
-      return { mode };
-    }
-
-    const effort = normalizeAmpEffort(model, providerSettings.effortLevel);
-    return effort ? { effort, mode } : { mode };
+    return { mode: resolveAmpAgentMode(model) };
   }
 
   private getAmpSystemPrompt(): string {
@@ -1007,7 +1029,7 @@ function normalizeAmpCommands(value: unknown): SlashCommand[] {
 
 function findSelectConfigOption(
   configOptions: AcpSessionConfigOption[] | null | undefined,
-  category: 'mode',
+  category: 'model' | 'mode',
 ): Extract<AcpSessionConfigOption, { type: 'select' }> | null {
   const options = configOptions ?? [];
   const byCategory = options.find((option) => (

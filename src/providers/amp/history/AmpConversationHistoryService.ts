@@ -7,7 +7,7 @@ export class AmpConversationHistoryService implements ProviderConversationHistor
     _conversation: Conversation,
     _vaultPath: string | null,
   ): Promise<void> {
-    // acp-amp currently does not expose durable ACP session loading. Claudian keeps
+    // The Amp ACP adapters do not expose durable ACP session loading. Claudian keeps
     // local messages and bootstraps a fresh adapter session after restart.
   }
 

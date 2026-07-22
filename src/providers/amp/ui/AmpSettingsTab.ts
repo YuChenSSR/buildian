@@ -23,7 +23,7 @@ export const ampSettingsTabRenderer: ProviderSettingsTabRenderer = {
 
     new Setting(container)
       .setName('Enable amp agent')
-      .setDesc('Launch amp through the acp-amp adapter. Requires amp CLI login and a paid amp credits balance.')
+      .setDesc('Launch amp through the amp-acp adapter. Requires amp CLI login and a paid amp credits balance.')
       .addToggle((toggle) =>
         toggle
           .setValue(ampSettings.enabled)
@@ -35,8 +35,8 @@ export const ampSettingsTabRenderer: ProviderSettingsTabRenderer = {
       );
 
     const cliPathSetting = new Setting(container)
-      .setName('Adapter path')
-      .setDesc('Optional absolute path to acp-amp or npx for this computer. Leave empty to use acp-amp from your shell path, then npx @superagenticai/acp-amp as a fallback.');
+      .setName('Runtime path')
+      .setDesc('Optional absolute path to node or a current amp-acp adapter. Leave empty to use node with buildian\'s bundled amp acp bridge.');
     const validationEl = container.createDiv({
       cls: 'claudian-cli-path-validation claudian-setting-validation claudian-setting-validation-error claudian-hidden',
     });
@@ -114,8 +114,8 @@ export const ampSettingsTabRenderer: ProviderSettingsTabRenderer = {
     cliPathSetting.addText((text) => {
       text
         .setPlaceholder(process.platform === 'win32'
-          ? 'C:\\Users\\you\\.local\\bin\\acp-amp.exe'
-          : '~/.local/bin/acp-amp')
+          ? 'C:\\Program Files\\nodejs\\node.exe'
+          : '/opt/homebrew/bin/node')
         .setValue(currentCliPath)
         .onChange(async (value) => {
           await persistCliPath(value);
@@ -127,7 +127,7 @@ export const ampSettingsTabRenderer: ProviderSettingsTabRenderer = {
 
     new Setting(container)
       .setName('Prerequisites')
-      .setDesc('Install and log in with Amp CLI (`amp login`). For the ACP adapter, install acp-amp or rely on npx. ACP usage consumes paid Amp credits.');
+      .setDesc('Install and log in with Amp CLI (`amp login`) and install Node.js 18 or newer. ACP usage consumes paid Amp credits.');
 
     new Setting(container).setName('Commands').setHeading();
     context.renderHiddenProviderCommandSetting(container, AMP_PROVIDER_ID, {
@@ -142,8 +142,8 @@ export const ampSettingsTabRenderer: ProviderSettingsTabRenderer = {
       scope: `provider:${AMP_PROVIDER_ID}`,
       heading: 'Environment',
       name: 'CLI environment',
-      desc: 'Runtime-specific variables only. Use this for PATH, AMP_API_KEY, ACP_AMP_DRIVER, proxy, and certificate configuration.',
-      placeholder: 'AMP_API_KEY=...\nACP_AMP_DRIVER=python\nHTTPS_PROXY=http://127.0.0.1:7890',
+      desc: 'Runtime-specific variables only. Use this for PATH, AMP_API_KEY, AMP_CLI_PATH, proxy, and certificate configuration.',
+      placeholder: 'AMP_API_KEY=...\nAMP_CLI_PATH=/absolute/path/to/amp\nHTTPS_PROXY=http://127.0.0.1:7890',
       renderCustomContextLimits: (target) => context.renderCustomContextLimits(target, AMP_PROVIDER_ID),
     });
   },
