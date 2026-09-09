@@ -228,6 +228,53 @@ beforeEach(() => {
 });
 
 describe('TabManager - Tab Lifecycle', () => {
+  it.each(['grok', 'cursor-agent'])('keeps %s live sessions intact during background command refresh', async (providerId) => {
+    const manager = createManager();
+    let sessionId: string | null = 'live-session';
+    const runtime = {
+      providerId,
+      isReady: () => true,
+      getSupportedCommands: jest.fn().mockResolvedValue([]),
+    };
+    const loader = {
+      loadCommands: jest.fn().mockImplementation(async () => {
+        sessionId = null;
+        return [];
+      }),
+    };
+    ProviderWorkspaceRegistry.setServices(providerId, {
+      commandCatalog: { setRuntimeCommands: jest.fn() } as any,
+      runtimeCommandLoader: loader as any,
+    });
+    const tab = createMockTabData({ providerId, service: runtime, state: { isStreaming: true } });
+
+    await (manager as any).warmProviderCommandRuntime(tab, providerId, {
+      runtime,
+      conversation: { sessionId: null },
+    });
+
+    expect(sessionId).toBe('live-session');
+    expect(loader.loadCommands).not.toHaveBeenCalled();
+  });
+
+  it.each(['isStreaming', 'hasPendingConversationSave'])('does not resync runtime warmup while %s', async (flag) => {
+    const manager = createManager();
+    const runtime = {
+      providerId: 'grok',
+      syncConversationState: jest.fn(),
+      ensureReady: jest.fn().mockResolvedValue(true),
+    };
+    const tab = createMockTabData({
+      providerId: 'grok', service: runtime, serviceInitialized: true,
+      state: { [flag]: true },
+    });
+    await (manager as any).ensureProviderTabRuntimeReady(tab, 'grok', {
+      runtime, conversation: { sessionId: null }, externalContextPaths: [],
+    });
+    expect(runtime.syncConversationState).not.toHaveBeenCalled();
+    expect(runtime.ensureReady).not.toHaveBeenCalled();
+  });
+
   let callbacks: TabManagerCallbacks;
 
   beforeEach(() => {

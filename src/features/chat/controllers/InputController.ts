@@ -394,7 +394,7 @@ export class InputController {
 
     try {
       const preparedTurn = agentService.prepareTurn(turnRequest);
-      userMsg.content = preparedTurn.persistedContent;
+      userMsg.content = preparedTurn.persistedContent || preparedTurn.request.text;
       userMsg.currentNote = preparedTurn.isCompact
         ? undefined
         : preparedTurn.request.currentNotePath;
@@ -930,7 +930,7 @@ export class InputController {
 
       this.pendingProviderUserMessages.push({
         displayContent,
-        persistedContent: preparedTurn.persistedContent,
+        persistedContent: preparedTurn.persistedContent || preparedTurn.request.text,
         currentNote: preparedTurn.isCompact
           ? undefined
           : preparedTurn.request.currentNotePath,

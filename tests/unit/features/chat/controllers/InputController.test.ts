@@ -926,6 +926,21 @@ describe('InputController - Message Queue', () => {
   });
 
   describe('Sending messages', () => {
+    it('retains user input when a provider leaves persistedContent empty', async () => {
+      deps = createSendableDeps();
+      (deps as any).mockAgentService.prepareTurn = jest.fn().mockReturnValue({
+        request: { text: 'Remember the blue notebook' },
+        persistedContent: '',
+        prompt: 'Remember the blue notebook',
+        isCompact: false,
+        mcpMentions: new Set(),
+      });
+      (deps as any).mockAgentService.query = jest.fn().mockImplementation(() => createMockStream([{ type: 'done' }]));
+      controller = new InputController(deps);
+      await controller.sendMessage({ content: 'Remember the blue notebook' });
+      expect(deps.state.messages[0].content).toBe('Remember the blue notebook');
+    });
+
     it('should send message, hide welcome, and save conversation', async () => {
       const welcomeEl = createMockWelcomeEl();
       const fileContextManager = createMockFileContextManager();

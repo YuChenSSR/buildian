@@ -60,6 +60,23 @@ function createConnectionHarness(
 }
 
 describe('AcpClientConnection', () => {
+  it.each([null, {}, { configOptions: [] }])('keeps the requested session id when session/load returns %p', async (result) => {
+    const harness = createConnectionHarness(transport => new AcpClientConnection({ transport }));
+    try {
+      const loaded = harness.connection.loadSession({
+        cwd: '/vault', mcpServers: [], sessionId: 'saved-session',
+      });
+      const outbound = await harness.nextOutbound();
+      expect(outbound.method).toBe('session/load');
+      harness.sendInbound({ id: outbound.id, jsonrpc: '2.0', result });
+      await expect(loaded).resolves.toEqual({ ...result, sessionId: 'saved-session' });
+    } finally {
+      harness.connection.dispose();
+      harness.transport.dispose();
+      harness.close();
+    }
+  });
+
   it('advertises derived client capabilities and dispatches session notifications', async () => {
     const notifications: AcpSessionNotification[] = [];
     const harness = createConnectionHarness((transport) => new AcpClientConnection({

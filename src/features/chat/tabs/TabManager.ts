@@ -816,13 +816,16 @@ export class TabManager implements TabManagerInterface {
     providerId: ProviderId,
     context: ProviderWarmupContext,
   ): Promise<void> {
+    if (tab.state.isStreaming || tab.state.hasPendingConversationSave) {
+      return;
+    }
     if (!context.runtime || context.runtime.providerId !== providerId || !tab.serviceInitialized) {
       await initializeTabService(tab, this.plugin, context.conversation);
       setupServiceCallbacks(tab, this.plugin);
     }
 
     const runtime = tab.service?.providerId === providerId ? tab.service : null;
-    if (!runtime) {
+    if (!runtime || tab.state.isStreaming || tab.state.hasPendingConversationSave) {
       return;
     }
 
@@ -911,6 +914,11 @@ export class TabManager implements TabManagerInterface {
     providerId: ProviderId,
     context: ProviderCommandContext,
   ): Promise<SlashCommand[]> {
+    // A live runtime owns newer session state than the last saved conversation.
+    // Command discovery must not reset it while a turn is starting or streaming.
+    if (tab.state.isStreaming || tab.state.hasPendingConversationSave || context.runtime?.isReady()) {
+      return context.runtime?.getSupportedCommands() ?? [];
+    }
     const catalog = ProviderWorkspaceRegistry.getCommandCatalog(providerId);
     const loader = ProviderWorkspaceRegistry.getRuntimeCommandLoader(providerId);
     if (!catalog || !loader) {

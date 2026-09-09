@@ -154,8 +154,10 @@ export class AcpClientConnection {
     return this.requestWithFallback<AcpNewSessionResponse>('newSession', request);
   }
 
-  loadSession(request: AcpLoadSessionRequest): Promise<AcpLoadSessionResponse> {
-    return this.requestWithFallback<AcpLoadSessionResponse>('loadSession', request);
+  async loadSession(request: AcpLoadSessionRequest): Promise<AcpLoadSessionResponse> {
+    const response = await this.requestWithFallback<Partial<AcpLoadSessionResponse> | null>('loadSession', request);
+    // ACP session/load may return null or config state without echoing the session id.
+    return { ...response, sessionId: response?.sessionId ?? request.sessionId };
   }
 
   listSessions(request: AcpListSessionsRequest = {}): Promise<AcpListSessionsResponse> {

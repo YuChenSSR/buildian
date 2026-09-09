@@ -300,6 +300,12 @@ describe('session utilities', () => {
   });
 
   describe('buildContextFromHistory', () => {
+    it('recovers user input saved only as displayContent by older providers', () => {
+      expect(buildContextFromHistory([{
+        id: 'old-user', role: 'user', content: '', displayContent: 'Remember the blue notebook', timestamp: 0,
+      }])).toBe('User: Remember the blue notebook');
+    });
+
     it('builds context from simple user/assistant exchange', () => {
       const messages: ChatMessage[] = [
         { id: 'msg-1', role: 'user', content: 'Hello', timestamp: 1000 },
