@@ -45,6 +45,7 @@ export interface AcpClientAuthCapabilities {
 }
 
 export interface AcpClientCapabilities {
+  _meta?: Record<string, unknown>;
   auth?: AcpClientAuthCapabilities;
   fs?: AcpFileSystemCapabilities;
   terminal?: boolean;

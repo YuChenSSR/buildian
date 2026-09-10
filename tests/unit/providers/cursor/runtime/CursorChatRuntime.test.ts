@@ -31,6 +31,34 @@ describe('CursorChatRuntime', () => {
     jest.restoreAllMocks();
   });
 
+  it.each(['createSession', 'loadSession'])('applies and verifies max effort during %s', async (method) => {
+    const runtime = new CursorChatRuntime(createMockPlugin());
+    jest.spyOn(runtime as any, 'getProviderSettings').mockReturnValue({
+      model: 'cursor-agent:claude-4.6-opus-max-thinking', effortLevel: 'max',
+    });
+    const effort: AcpSessionConfigOption = {
+      id: 'effort', name: 'Effort', category: 'thought_level', type: 'select',
+      currentValue: 'high', options: [{ name: 'High', value: 'high' }, { name: 'Max', value: 'max' }],
+    };
+    const response = { sessionId: 'cursor-session', configOptions: [effort] };
+    const setConfigOption = jest.fn().mockResolvedValue({ configOptions: [{ ...effort, currentValue: 'max' }] });
+    (runtime as any).connection = {
+      newSession: jest.fn().mockResolvedValue(response),
+      loadSession: jest.fn().mockResolvedValue(response),
+      setConfigOption,
+    };
+
+    const args = method === 'loadSession' ? ['cursor-session', '/tmp/vault'] : ['/tmp/vault'];
+    expect(await (runtime as any)[method](...args)).toBeTruthy();
+    expect(setConfigOption).toHaveBeenCalledWith({
+      configId: 'effort', sessionId: 'cursor-session', type: 'select', value: 'max',
+    });
+
+    setConfigOption.mockResolvedValue({ configOptions: [effort] });
+    await expect((runtime as any).applySelectedSessionConfig(response))
+      .rejects.toThrow('Cursor did not apply effort=max');
+  });
+
   it('builds the Cursor ACP launch arguments', () => {
     const runtime = new CursorChatRuntime(createMockPlugin());
 

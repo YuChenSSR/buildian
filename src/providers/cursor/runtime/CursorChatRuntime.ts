@@ -61,6 +61,7 @@ import {
   CURSOR_PROVIDER_ID,
   decodeCursorModelId,
   encodeCursorModelId,
+  extractCursorReasoningLevel,
   isCursorModelSelectionId,
   normalizeCursorDiscoveredModels,
   normalizeCursorReasoningLevel,
@@ -573,7 +574,9 @@ export class CursorChatRuntime implements ChatRuntime {
     });
 
     this.transport.start();
-    const initResponse = await this.connection.initialize();
+    const initResponse = await this.connection.initialize({
+      clientCapabilities: { _meta: { parameterizedModelPicker: true } },
+    });
     await this.authenticate(initResponse);
     await this.syncInitializeMetadata(initResponse);
     this.setReady(true);
@@ -827,6 +830,33 @@ export class CursorChatRuntime implements ChatRuntime {
       });
       configOptions = response.configOptions ?? configOptions;
       await this.syncSessionModelState({ configOptions });
+    }
+
+    // CLI aliases can resolve to a default effort in ACP; apply the UI selection
+    // after both newSession and loadSession, using the agent's supported values.
+    const reasoningOption = configOptions?.find(option => (
+      option.type === 'select' && (option.id === 'effort' || option.id === 'reasoning')
+    ));
+    if (reasoningOption?.type === 'select') {
+      const effort = extractCursorReasoningLevel(selectedModel ?? '')
+        ?? normalizeCursorReasoningLevel(providerSettings.effortLevel);
+      if (!selectConfigHasValue(reasoningOption, effort)) {
+        throw new Error(`Cursor does not support ${reasoningOption.id}=${effort} for this model.`);
+      }
+      if (reasoningOption.currentValue !== effort) {
+        const response = await this.connection.setConfigOption({
+          configId: reasoningOption.id,
+          sessionId: params.sessionId,
+          type: 'select',
+          value: effort,
+        });
+        configOptions = response.configOptions;
+        if (!configOptions?.some(option => (
+          option.type === 'select' && option.id === reasoningOption.id && option.currentValue === effort
+        ))) {
+          throw new Error(`Cursor did not apply ${reasoningOption.id}=${effort}.`);
+        }
+      }
     }
 
     const targetMode = this.resolveSelectedSessionMode(providerSettings);
